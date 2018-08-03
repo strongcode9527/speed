@@ -8,7 +8,17 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "extract-text-webpack-plugin": "^3.0.2",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^5.2.0",
+    "eslint-loader": "^2.1.0",
+    "html-webpack-plugin": "^3.2.0",
+    "nodemon": "^1.18.3",
     "react-dev-utils": "^5.0.1",
     "webpack": "^4.16.4",
     "webpack-dev-server": "^3.1.5",
@@ -16,7 +26,7 @@
     "webpack-merge": "^4.1.4"
   },
   "scripts": {
-    "start": "node ./scripts/dev.js",
+    "start": "node ./scripts/dev.js --trace-depracation",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

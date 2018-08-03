@@ -1,0 +1,1 @@
+console.log('in strong 1 ')   

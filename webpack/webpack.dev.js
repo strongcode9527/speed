@@ -1,17 +1,18 @@
 const merge = require('webpack-merge'),
       common = require('./webpack.common'),
-      webpack = require('webpack')
-        = require('extract-text-webpack-plugin')
+      webpack = require('webpack'),
+      HtmlWebpackPlugin  = require('html-webpack-plugin')
       
-module.exports =  merge({
-  devServer: {
-    port: 9527,
-    open: true,
-  },
+
+
+common.entry.unshift('react-dev-utils/webpackHotDevClient')
+
+
+module.exports =  merge(common, {
   mode: 'development',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({template: '../index.html'})
+    new HtmlWebpackPlugin({template: './index.html'}) 
   ]
 })
 
