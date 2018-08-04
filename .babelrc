@@ -1,7 +1,7 @@
 {
   "presets": ["env", "stage-2"],
   "plugins": [
-    ["transform-react-jsx", {"pragma": "Strong.createElement"}],
+    ["transform-react-jsx", {"pragma": "Speed.createElement"}],
     "transform-class-properties"
   ]
 }

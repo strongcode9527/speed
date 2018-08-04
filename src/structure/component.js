@@ -1,0 +1,5 @@
+export class Component {
+  setState() {
+  
+  }
+}

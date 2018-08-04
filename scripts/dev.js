@@ -1,8 +1,8 @@
 const webpack = require('webpack')
 const devServer = require('webpack-dev-server')
+const config = require('../webpack/webpack.dev')
 const openBrowser = require('react-dev-utils/openBrowser')
 const {choosePort, createCompiler, prepareUrls} = require('react-dev-utils/WebpackDevServerUtils')
-const config = require('../webpack/webpack.dev')
 
 choosePort('localhost', 9527)
 .then(port => {
