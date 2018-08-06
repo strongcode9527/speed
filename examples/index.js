@@ -9,7 +9,8 @@ class App extends Component {
   render() {
     return (
       <div onClick={() => {}}>
-        adsfasfafdaf   
+        <span>strong1</span>   
+        <span>strong2</span>   
       </div>
     )
   }

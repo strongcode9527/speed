@@ -1,3 +1,9 @@
+import renderFactory from './renderFactory'
+// render 
 export function render(element, root) {
-  console.log(element, root)
+  renderFactory.updateQueue.push({
+
+  })
 }
+
+requestIdleCallback()
