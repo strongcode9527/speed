@@ -15,7 +15,7 @@ choosePort('localhost', 9527)
     host: 'localhost'
   })
 
-  server.listen(port, () => {
+  server.listen(port, 'localhost', () => {
     console.log(`the client is open in ${port}`)
     openBrowser(`http://localhost:${port}`)
   })
