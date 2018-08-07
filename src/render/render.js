@@ -1,3 +1,5 @@
+import {pathOr} from 'ramda'
+
 import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
@@ -15,18 +17,31 @@ function performWork(deadline) {
   if(renderFactory.pendingCommit || renderFactory.updateQueue.length > 0) {
     requestIdleCallback(performWork)
   }
-  requestIdleCallback(performWork)
 }
 
 function workLoop(deadline) {
+  // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
+  if(!renderFactory.nextUnitOfWork) {
+    createUpdateFiberFromQueue()
+  }
   while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
   }
 }
 
 function createUnitOfWork(currentFiber) {
-  console.log(currentFiber)
-  
+  const child = pathOr([], ['props', 'children'], currentFiber)
+  // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
+  if(typeof child === 'string' || typeof child === 'number') {
+    
+  }
+  console.log('child', child)
+  // return currentFiber.child
+}
 
-  return currentFiber.child
+// 根据渲染队列，生成渲染节点。
+function createUpdateFiberFromQueue() {
+  const fiber = renderFactory.updateQueue.shift()
+
+  renderFactory.nextUnitOfWork = fiber
 }

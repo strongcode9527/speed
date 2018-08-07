@@ -6,7 +6,9 @@
   "directories": {
     "example": "examples"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ramda": "^0.25.0"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",

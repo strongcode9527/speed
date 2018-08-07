@@ -1,7 +1,7 @@
 export default {
-  HostComponent: 'host',
-  ClassComponent: 'class',
-  HostRoot: 'root',
   HostText: 6,
-  FunctionalComponent: 1
+  HostRoot: 'root',
+  HostComponent: 'host',
+  FunctionalComponent: 1,
+  ClassComponent: 'class',
 }
