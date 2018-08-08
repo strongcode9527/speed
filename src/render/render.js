@@ -4,7 +4,7 @@ import {createArrayChild} from '../utils'
 import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
-
+import update from './updateComponent'
 
 export function render(element, root) {
   // 将根节点放入渲染列表中。
@@ -33,24 +33,32 @@ function workLoop(deadline) {
 
 /**
  * 返回当前fiber的子节点的第一个，并且建立所有子节点之间的关系。
- * @param {Object} currentFiber 
+ * 
+ * @param {Object} currentFiber 此参数必须为已经instance后的fiber
  */
 function createUnitOfWork(currentFiber) {
   const childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
 
+  if(currentFiber.child) return currentFiber.child
 
-  
-  
+  console.log('childs', childs)
   // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
   if(typeof child === 'string' || typeof child === 'number') {
     
   }
   
   let prevFiber = null
-
+  
   childs.forEach((child, index) => {
+    // child 是vnode，而不是fiber
     const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
     
+    update(newFiber)
+
+    prevFiber && (prevFiber.sibing = newFiber)
+
+    prevFiber = newFiber
+
     if(index === 0) {
       currentFiber.child = newFiber
     }

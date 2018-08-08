@@ -1,14 +1,12 @@
-export function instantiationComponent(fiber) {
-  // class 组件
-  if(path(['type', 'isClassComponent'], fiber)) {
+export function instantiationClassComponent(fiber) {
+  return fiber.stateNode = new fiber.type(fiber.props)
+}
 
-  }
-  // function 组件
-  else if(typeof fiber.type === 'functon') {
+export function instantiationFunctionComponent(fiber) {
+  return fiber.type(fiber.props)
+}
 
-  }
-  // dom组件
-  else {
-
-  }
+export function instantiationDomComponent(fiber) {
+  console.log('type', fiber.type)
+  return document.createElement(fiber.type)
 }

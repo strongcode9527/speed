@@ -1,13 +1,22 @@
+import {path} from 'ramda'
+import {instantiationClassComponent, instantiationDomComponent} from './instantiationComponent'
 
-function updateClassComponent(fiber) {
-  // 如果stateNode存在说明这是个更新，而不是创建
-  if(fiber.stateNode) {
+// 更新和创建在一起。
+export default function update(fiber) {
 
-  }
-  else {
-    const instantiation = new fiber.type(fiber.props)
-    fiber.stateNode = instantiation
-    // fiber.props.children = instantiation.render()
+  if(!fiber.stateNode) {
+    // 
+    if(path(['type', 'isClassComponent'], fiber)) {
+      return instantiationClassComponent(fiber)
+    }
+    // function 组件
+    else if(typeof fiber.type === 'function') {
+  
+    }
+    // dom组件
+    else {
+      return instantiationDomComponent(fiber)
+    }
   }
   
 }
