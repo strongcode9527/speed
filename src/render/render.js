@@ -1,10 +1,11 @@
 import {pathOr} from 'ramda'
 
+import {createArrayChild} from '../utils'
 import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
 
-// render 
+
 export function render(element, root) {
   // 将根节点放入渲染列表中。
 
@@ -29,14 +30,31 @@ function workLoop(deadline) {
   }
 }
 
+
+/**
+ * 返回当前fiber的子节点的第一个，并且建立所有子节点之间的关系。
+ * @param {Object} currentFiber 
+ */
 function createUnitOfWork(currentFiber) {
-  const child = pathOr([], ['props', 'children'], currentFiber)
+  const childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
+
+
+  
+  
   // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
   if(typeof child === 'string' || typeof child === 'number') {
     
   }
-  console.log('child', child)
-  // return currentFiber.child
+  
+  let prevFiber = null
+
+  childs.forEach((child, index) => {
+    const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
+    
+    if(index === 0) {
+      currentFiber.child = newFiber
+    }
+  })
 }
 
 // 根据渲染队列，生成渲染节点。
