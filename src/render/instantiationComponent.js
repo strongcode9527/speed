@@ -1,5 +1,8 @@
 export function instantiationClassComponent(fiber) {
-  return fiber.stateNode = new fiber.type(fiber.props)
+  const instantiation = new fiber.type(fiber.props)
+  fiber.stateNode = instantiation
+  fiber.props.children = instantiation.render()
+  return fiber
 }
 
 export function instantiationFunctionComponent(fiber) {
@@ -7,6 +10,5 @@ export function instantiationFunctionComponent(fiber) {
 }
 
 export function instantiationDomComponent(fiber) {
-  console.log('type', fiber.type)
   return document.createElement(fiber.type)
 }

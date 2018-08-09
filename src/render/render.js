@@ -27,7 +27,12 @@ function workLoop(deadline) {
   }
   while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
+    if(renderFactory.pendingCommit) {
+      // 子节点遍历完成
+      console.log(renderFactory.pendingCommit)
+    }
   }
+  
 }
 
 
@@ -41,15 +46,26 @@ function createUnitOfWork(currentFiber) {
 
   if(currentFiber.child) return currentFiber.child
 
-  console.log('childs', childs)
+
   // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
-  if(typeof child === 'string' || typeof child === 'number') {
-    
+  if(!currentFiber.type) {
+    while(currentFiber) {
+      if(currentFiber.tag === tags.HostRoot) {
+        renderFactory.pendingCommit = currentFiber
+        return 
+      }
+      currentFiber = currentFiber.return
+      if(currentFiber.sibing) {
+        return currentFiber.sibing
+      }
+    }
   }
   
   let prevFiber = null
   
   childs.forEach((child, index) => {
+
+
     // child 是vnode，而不是fiber
     const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
     
@@ -63,6 +79,7 @@ function createUnitOfWork(currentFiber) {
       currentFiber.child = newFiber
     }
   })
+  return currentFiber.child
 }
 
 // 根据渲染队列，生成渲染节点。
