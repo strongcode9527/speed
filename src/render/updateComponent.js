@@ -1,5 +1,5 @@
 import {path} from 'ramda'
-import {instantiationClassComponent, instantiationDomComponent} from './instantiationComponent'
+import {instantiationClassComponent, instantiationDomComponent, instantiationFunctionComponent} from './instantiationComponent'
 
 // 更新和创建在一起。
 export default function update(fiber) {
@@ -11,7 +11,7 @@ export default function update(fiber) {
     }
     // function 组件
     else if(typeof fiber.type === 'function') {
-  
+      return instantiationFunctionComponent(fiber)
     }
     // dom组件
     else {
