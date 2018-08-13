@@ -5,7 +5,7 @@ import {createArrayChild} from '../utils'
 import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
-
+import EFFECTS from '../structure/effects'
 export function render(element, root) {
   // 将根节点放入渲染列表中。
 
@@ -43,7 +43,7 @@ function workLoop(deadline) {
 function createUnitOfWork(currentFiber) {
 
   let childs = []
-  if(path(['type', 'isClassComponent'], currentFiber)) {
+  if(path(['type', 'prototype', 'isClassComponent'], currentFiber)) {
     childs = createArrayChild(currentFiber.stateNode.render())
   }
   else if(typeof path(['type'], currentFiber) === 'function') {
@@ -70,18 +70,29 @@ function createUnitOfWork(currentFiber) {
     }
   }
   
-  let prevFiber = null
-
-  console.log(currentFiber)
+  let prevFiber = null,
+      child = currentFiber.child
 
   childs.forEach((child, index) => {
-
-
+    
     // child 是vnode，而不是fiber
-    const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
+    const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber),
+          isSame = child && newFiber && child.type === newFiber.type
 
     // 实例化节点,update处理多样化子节点。
     update(newFiber)
+    // 更新
+    if(isSame) {
+
+    }
+    // 添加
+    else if(!isSame && newFiber) {
+      newFiber.effectTag = EFFECTS.PLACEMENT
+    }
+    // 修改
+    else {
+
+    }
 
     prevFiber && (prevFiber.sibing = newFiber)
 
@@ -100,3 +111,4 @@ function createUpdateFiberFromQueue() {
 
   renderFactory.nextUnitOfWork = fiber
 }
+

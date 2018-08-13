@@ -7,6 +7,6 @@ export class Component {
     throw Error('you should implement render function')
   }
 
-  static isClassComponent = true
 }
 
+Component.prototype.isClassComponent = true

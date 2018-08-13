@@ -1,3 +1,4 @@
+import Tags from './componentTags'
 /**
  * 
  * @param {String} tag fiber类型
@@ -9,14 +10,20 @@
  * @param {Object} child fiber的子节点
  */
 export function createFiber(tag, type, stateNode, props = {}, Return ,sibling, child) {
+  const _tag = ['string', 'number'].indexOf(typeof type) !== -1 
+        ? Tags.HostText
+        : type.prototype.isClassComponent
+        ? Tags.ClassComponent
+        : Tags.FunctionalComponent
+
   return {
-    tag,
     type,
     props,
     child,
     sibling,
     stateNode,
     return: Return,
+    tag: tag || _tag,
   }
 }
 
