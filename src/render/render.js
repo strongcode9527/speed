@@ -1,15 +1,15 @@
-import {pathOr} from 'ramda'
+import {pathOr, path} from 'ramda'
 
+import update from './updateComponent'
 import {createArrayChild} from '../utils'
 import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
-import update from './updateComponent'
 
 export function render(element, root) {
   // 将根节点放入渲染列表中。
 
-  renderFactory.updateQueue.push(createFiber(tags.HostRoot, element.type, root, {children: element}))
+  renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}))
   requestIdleCallback(performWork)
 }
 
@@ -29,10 +29,9 @@ function workLoop(deadline) {
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
     if(renderFactory.pendingCommit) {
       // 子节点遍历完成
-      console.log(renderFactory.pendingCommit)
+      console.log(renderFactory.pendingCommit )
     }
   }
-  
 }
 
 
@@ -42,8 +41,18 @@ function workLoop(deadline) {
  * @param {Object} currentFiber 此参数必须为已经instance后的fiber
  */
 function createUnitOfWork(currentFiber) {
-  const childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
 
+  let childs = []
+  if(path(['type', 'isClassComponent'], currentFiber)) {
+    childs = createArrayChild(currentFiber.stateNode.render())
+  }
+  else if(typeof path(['type'], currentFiber) === 'function') {
+    childs = createArrayChild(currentFiber.stateNode(currentFiber.props))
+  }else {
+    childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
+  }
+  
+  
   if(currentFiber.child) return currentFiber.child
 
 
@@ -62,22 +71,25 @@ function createUnitOfWork(currentFiber) {
   }
   
   let prevFiber = null
-  
+
+  console.log(currentFiber)
+
   childs.forEach((child, index) => {
 
 
     // child 是vnode，而不是fiber
     const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
-    
+
+    // 实例化节点,update处理多样化子节点。
     update(newFiber)
 
     prevFiber && (prevFiber.sibing = newFiber)
 
     prevFiber = newFiber
 
-    if(index === 0) {
-      currentFiber.child = newFiber
-    }
+    
+    index === 0 && (currentFiber.child = newFiber)
+    
   })
   return currentFiber.child
 }
