@@ -28,8 +28,7 @@ function workLoop(deadline) {
   while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
     if(renderFactory.pendingCommit) {
-      // 子节点遍历完成
-      console.log(renderFactory.pendingCommit )
+      commitWork(renderFactory.pendingCommit)
     }
   }
 }
@@ -81,8 +80,14 @@ function createUnitOfWork(currentFiber) {
   childs.forEach((child, index) => {
     
     // child 是vnode，而不是fiber
-    const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber),
-          isSame = oldChild && newFiber && child.type === newFiber.type
+    let newFiber = null
+    if(typeof child === 'object') {
+      newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
+    }else {
+      newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
+    }
+
+    const isSame = oldChild && newFiber && child.type === newFiber.type
 
     // 实例化节点,update处理多样化子节点。
     update(newFiber)
@@ -130,5 +135,19 @@ function collectEffects(fiber) {
     parent.effects = parent.effects.concat(fiber.effects)
   }
 
-  console.log(fiber, parent)
+}
+
+function commitWork(fiber) {
+  const effects = fiber.effects
+
+  effects.forEach(effect => {
+    let parent = effect.return
+    
+    while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
+      parent = parent.return
+    }
+    console.log(parent, effect);
+    (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
+  })
+
 }

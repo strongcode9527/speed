@@ -13,8 +13,11 @@ export default function update(fiber) {
     return upgradeFunctionComponent(fiber)
   }
 
-  else {
+  else if(typeof fiber.type === 'string'){
     return upgradeDomComponent(fiber)
+  }
+  else {
+    return upgradeTextComponent(fiber)
   }
 }
 
@@ -44,4 +47,8 @@ function upgradeDomComponent(fiber) {
   const dom = document.createElement(fiber.type)
   fiber.tag = tags.HostComponent
   fiber.stateNode = dom
+}
+
+function upgradeTextComponent(fiber) {
+  fiber.stateNode = document.createTextNode(fiber.props.children[0])
 }
