@@ -1,4 +1,7 @@
+import {path} from 'ramda'
+
 import Tags from './componentTags'
+
 /**
  * 
  * @param {String} tag fiber类型
@@ -12,7 +15,7 @@ import Tags from './componentTags'
 export function createFiber(tag, type, stateNode, props = {}, Return ,sibling, child) {
   const _tag = ['string', 'number'].indexOf(typeof type) !== -1 
         ? Tags.HostText
-        : type.prototype.isClassComponent
+        : path(['prototype', 'isClassComponent'], type)
         ? Tags.ClassComponent
         : Tags.FunctionalComponent
 

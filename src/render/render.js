@@ -52,7 +52,6 @@ function createUnitOfWork(currentFiber) {
     childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
   }
   
-  
   if(currentFiber.child) return currentFiber.child
 
 
@@ -63,21 +62,27 @@ function createUnitOfWork(currentFiber) {
         renderFactory.pendingCommit = currentFiber
         return 
       }
-      currentFiber = currentFiber.return
+      collectEffects(currentFiber)
+
       if(currentFiber.sibing) {
         return currentFiber.sibing
       }
+      
+      currentFiber = currentFiber.return
+
+      
+      
     }
   }
   
-  let prevFiber = null,
-      child = currentFiber.child
+  let prevFiber = null, oldChild = currentFiber.child
+  
 
   childs.forEach((child, index) => {
     
     // child 是vnode，而不是fiber
     const newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber),
-          isSame = child && newFiber && child.type === newFiber.type
+          isSame = oldChild && newFiber && child.type === newFiber.type
 
     // 实例化节点,update处理多样化子节点。
     update(newFiber)
@@ -100,6 +105,8 @@ function createUnitOfWork(currentFiber) {
 
     
     index === 0 && (currentFiber.child = newFiber)
+
+    oldChild = path(['sibling'], oldChild)
     
   })
   return currentFiber.child
@@ -112,3 +119,16 @@ function createUpdateFiberFromQueue() {
   renderFactory.nextUnitOfWork = fiber
 }
 
+function collectEffects(fiber) {
+  fiber.effects = fiber.effects || []
+  fiber.effectTag && fiber.effects.push(fiber)
+  
+  const parent = fiber.return
+
+  if(parent) {
+    parent.effects = parent.effects || []
+    parent.effects = parent.effects.concat(fiber.effects)
+  }
+
+  console.log(fiber, parent)
+}
