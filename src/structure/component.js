@@ -1,6 +1,8 @@
+import {scheduleWork} from '../render/render'
+
 export class Component {
   setState() {
-    
+    scheduleWork(this)
   }
 
   render() {

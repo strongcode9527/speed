@@ -1,11 +1,12 @@
 import {pathOr, path} from 'ramda'
 
 import update from './updateComponent'
-import {createArrayChild} from '../utils'
+import EFFECTS from '../structure/effects'
 import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
-import EFFECTS from '../structure/effects'
+import {createArrayChild, dispatchLifeCycle} from '../utils'
+
 export function render(element, root) {
   // 将根节点放入渲染列表中。
 
@@ -146,8 +147,21 @@ function commitWork(fiber) {
     while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
       parent = parent.return
     }
-    console.log(parent, effect);
+    
     (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
+    if(effect.tag === tags.ClassComponent) {
+      dispatchLifeCycle(effect.stateNode, 'componentDidMount')
+    }
   })
 
+}
+
+export function scheduleWork(instance, partialState) {
+  renderFactory.updateQueue.push({
+    fromTag: tags.ClassComponent,
+    stateNode: instance,
+    partialState: partialState
+  })
+
+  requestIdleCallback(performWork) //开始干活
 }
