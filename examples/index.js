@@ -12,8 +12,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('in')
-    setInterval(() => this.setState({num: this.state.num + 1}))
+    setTimeout(() => this.setState({num: this.state.num + 1}))
   }
 
   render() {

@@ -27,6 +27,7 @@ function workLoop(deadline) {
     createUpdateFiberFromQueue()
   }
   while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
+    
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
     if(renderFactory.pendingCommit) {
       commitWork(renderFactory.pendingCommit)
@@ -41,7 +42,7 @@ function workLoop(deadline) {
  * @param {Object} currentFiber 此参数必须为已经instance后的fiber
  */
 function createUnitOfWork(currentFiber) {
-
+  console.log(currentFiber)
   let childs = []
   if(path(['type', 'prototype', 'isClassComponent'], currentFiber)) {
     childs = createArrayChild(currentFiber.stateNode.render())

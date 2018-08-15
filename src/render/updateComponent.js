@@ -25,13 +25,14 @@ export default function update(fiber) {
 function upgradeClassComponent(fiber) {
   // 更新
   if(fiber.stateNode) {
-
+    console.log('in upgrade')
   }
   // 创建
   else {
     const instantiation = new fiber.type(fiber.props)
     fiber.tag = tags.ClassComponent
     fiber.stateNode = instantiation
+    fiber.stateNode.__relative = fiber
     return fiber
   }
   
