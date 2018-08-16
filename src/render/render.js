@@ -35,50 +35,14 @@ function workLoop(deadline) {
   }
 }
 
-
 /**
- * 返回当前fiber的子节点的第一个，并且建立所有子节点之间的关系。
- * 
- * @param {Object} currentFiber 此参数必须为已经instance后的fiber
+ * 为所有子节点Vnode创建fiber，并且建立联系，并为currenFiber绑定child
+ * @param {Vnode} childs 
+ * @param {Fiber} currentFiber 
  */
-function createUnitOfWork(currentFiber) {
-  console.log(currentFiber)
-  let childs = []
-  if(path(['type', 'prototype', 'isClassComponent'], currentFiber)) {
-    childs = createArrayChild(currentFiber.stateNode.render())
-  }
-  else if(typeof path(['type'], currentFiber) === 'function') {
-    childs = createArrayChild(currentFiber.stateNode(currentFiber.props))
-  }else {
-    childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
-  }
-  
-  if(currentFiber.child) return currentFiber.child
+function handleChildrenVnode(childs, currentFiber) {
 
-
-  // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
-  if(!currentFiber.type) {
-    while(currentFiber) {
-      if(currentFiber.tag === tags.HostRoot) {
-        renderFactory.pendingCommit = currentFiber
-        return 
-      }
-      collectEffects(currentFiber)
-
-      if(currentFiber.sibing) {
-        return currentFiber.sibing
-      }
-      
-      currentFiber = currentFiber.return
-
-      
-      
-    }
-  }
-  
   let prevFiber = null, oldChild = currentFiber.child
-  
-
   childs.forEach((child, index) => {
     
     // child 是vnode，而不是fiber
@@ -116,6 +80,53 @@ function createUnitOfWork(currentFiber) {
     oldChild = path(['sibling'], oldChild)
     
   })
+}
+
+
+/**
+ * 返回当前fiber的子节点的第一个，并且建立所有子节点之间的关系。
+ * 
+ * @param {Object} currentFiber 此参数必须为已经instance后的fiber
+ */
+function createUnitOfWork(currentFiber) {
+
+  let childs = []
+  if(path(['type', 'prototype', 'isClassComponent'], currentFiber) || path(['stateNode', 'constructor', 'prototype', 'isClassComponent'], currentFiber)) {
+    childs = createArrayChild(currentFiber.stateNode.render())
+  }
+  else if(typeof path(['type'], currentFiber) === 'function') {
+    childs = createArrayChild(currentFiber.stateNode(currentFiber.props))
+  }else {
+    childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
+  }
+  console.log(currentFiber)
+  if(currentFiber.child) return currentFiber.child
+
+  // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
+  if(!currentFiber.type && !path(['stateNode', '__relative'],currentFiber)) {
+    while(currentFiber) {
+      if(currentFiber.tag === tags.HostRoot) {
+        renderFactory.pendingCommit = currentFiber
+        return 
+      }
+
+      collectEffects(currentFiber)
+
+      if(currentFiber.sibing) {
+        return currentFiber.sibing
+      }
+      
+      currentFiber = currentFiber.return
+    }
+  }
+  
+  
+  // console.log(currentFiber)
+
+  handleChildrenVnode(childs, currentFiber)
+ 
+  
+
   return currentFiber.child
 }
 
@@ -153,7 +164,7 @@ function commitWork(fiber) {
     if(effect.tag === tags.ClassComponent) {
       dispatchLifeCycle(effect.stateNode, 'componentDidMount')
     }
-  })
+  }) 
 
 }
 

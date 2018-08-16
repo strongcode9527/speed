@@ -16,6 +16,7 @@ export default function update(fiber) {
   else if(typeof fiber.type === 'string'){
     return upgradeDomComponent(fiber)
   }
+  
   else {
     return upgradeTextComponent(fiber)
   }

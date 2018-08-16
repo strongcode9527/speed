@@ -12,6 +12,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log('in didMount')
     setTimeout(() => this.setState({num: this.state.num + 1}))
   }
 
