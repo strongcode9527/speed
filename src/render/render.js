@@ -104,21 +104,23 @@ function commitWork(fiber) {
       parent = parent.return
     }
 
-    console.log(effect.stateNode, parent.stateNode);
-
     (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
-    if(effect.tag === tags.ClassComponent) {
+
+    if(effect.tag === tags.ClassComponent && !effect.stateNode.didMount) {
       dispatchLifeCycle(effect.stateNode, 'componentDidMount')
+      effect.stateNode.didMount = true
     }
   }) 
 
 }
 
 export function scheduleWork(instance, partialState) {
+
   renderFactory.updateQueue.push({
-    fromTag: tags.ClassComponent,
     stateNode: instance,
-    partialState: partialState
+    tag: tags.ClassComponent,
+    partialState: partialState,
+    type: instance.constructor,
   })
 
   requestIdleCallback(performWork) //开始干活

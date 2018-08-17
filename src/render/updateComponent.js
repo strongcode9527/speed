@@ -37,7 +37,7 @@ function updateClassComponent(fiber) {
   }
 
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
-  
+  console.log('update component -========-=======================')
   return handleChildrenVnode(fiber.stateNode.__relative, createChilds(fiber))
 }
 
@@ -79,11 +79,12 @@ function handleChildrenVnode(currentFiber, childs) {
     }else {
       newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
     }
-
+    console.log(currentFiber,oldChildFiber, newFiber)
     const isSame = oldChildFiber && newFiber && oldChildFiber.type === newFiber.type
-
+    
     // 实例化节点,update处理多样化子节点。
-    update(newFiber)
+    update(newFiber) 
+
     // 更新
     if(isSame) {
       newFiber.effectTag = EFFECTS.UPDATE
