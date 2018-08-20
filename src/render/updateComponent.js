@@ -38,7 +38,7 @@ function updateClassComponent(fiber) {
 
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
   console.log('update component -========-=======================')
-  return handleChildrenVnode(fiber.stateNode.__relative, createChilds(fiber))
+  return handleChildrenVnode(fiber, createChilds(fiber))
 }
 
 function updateFunctionComponent(fiber) {
@@ -53,11 +53,13 @@ function updateDomComponent(fiber) {
     fiber.tag = fiber.tag || tags.HostComponent
     fiber.stateNode = dom
   }
+
   return handleChildrenVnode(fiber, createChilds(fiber))
 }
 
 function updateTextComponent(fiber) {
   fiber.stateNode = document.createTextNode(fiber.props.children[0])
+  return fiber
 }
 
 /**
@@ -66,7 +68,9 @@ function updateTextComponent(fiber) {
  * @param {Vnode} childs 
  */
 function handleChildrenVnode(currentFiber, childs) {
-  let oldChildFiber = currentFiber.child
+  let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
+
+  console.log(currentFiber, currentFiber.alternate)
 
   let prevFiber = null
 
@@ -74,20 +78,24 @@ function handleChildrenVnode(currentFiber, childs) {
     
     // child 是vnode，而不是fiber
     let newFiber = null
+
     if(typeof child === 'object') {
       newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
     }else {
       newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
     }
-    console.log(currentFiber,oldChildFiber, newFiber)
-    const isSame = oldChildFiber && newFiber && oldChildFiber.type === newFiber.type
     
+    const isSame = oldChildFiber && newFiber && oldChildFiber.type === newFiber.type
+    // console.log(isSame,oldChildFiber, currentFiber, index)
+
     // 实例化节点,update处理多样化子节点。
-    update(newFiber) 
+    // update(newFiber) 
 
     // 更新
     if(isSame) {
       newFiber.effectTag = EFFECTS.UPDATE
+      newFiber.alternate = oldChildFiber
+      console.log('in same', newFiber.alternate)
     }
     // 添加
     else if(!isSame && newFiber && !oldChildFiber) {
@@ -99,16 +107,21 @@ function handleChildrenVnode(currentFiber, childs) {
       
     }
 
-    prevFiber && (prevFiber.sibing = newFiber)
+
+    
+
+
+    prevFiber && (prevFiber.sibling = newFiber)
 
     prevFiber = newFiber
 
     
     index === 0 && (currentFiber.child = newFiber)
-
-    oldChildFiber = path(['sibling'], oldChildFiber)
     
+    oldChildFiber = path(['sibling'], oldChildFiber)
+
   })
+  console.log()
   return currentFiber
 }
 
