@@ -19,9 +19,9 @@ class App extends Component {
     const {num} = this.state
 
     return (
-      <div onClick={() => {}}>
+      <div onClick={() => {console.log('in')}} style={{background: 'red'}}>
         <span>strong1</span>   
-        <span>strong2</span>
+        <span data-index={this.state.num}>strong2</span>
         <span>count {num}</span>   
       </div>
     )

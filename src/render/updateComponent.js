@@ -37,7 +37,7 @@ function updateClassComponent(fiber) {
   }
 
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
-  console.log('update component -========-=======================')
+ 
   return handleChildrenVnode(fiber, createChilds(fiber))
 }
 
@@ -70,8 +70,6 @@ function updateTextComponent(fiber) {
 function handleChildrenVnode(currentFiber, childs) {
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
 
-  console.log(currentFiber, currentFiber.alternate)
-
   let prevFiber = null
 
   childs.forEach((child, index) => {
@@ -95,8 +93,9 @@ function handleChildrenVnode(currentFiber, childs) {
     if(isSame) {
       newFiber.effectTag = EFFECTS.UPDATE
       newFiber.alternate = oldChildFiber
-      console.log('in same', newFiber.alternate)
+     
     }
+
     // 添加
     else if(!isSame && newFiber && !oldChildFiber) {
       newFiber.effectTag = EFFECTS.PLACEMENT
@@ -121,7 +120,7 @@ function handleChildrenVnode(currentFiber, childs) {
     oldChildFiber = path(['sibling'], oldChildFiber)
 
   })
-  console.log()
+  
   return currentFiber
 }
 

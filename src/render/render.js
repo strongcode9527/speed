@@ -1,8 +1,7 @@
-import {pathOr, path} from 'ramda'
-
 import update from './updateComponent'
 import {dispatchLifeCycle} from '../utils'
 import EFFECTS from '../structure/effects'
+import updateDomAttr from './updateDomAttr'
 import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
@@ -31,7 +30,6 @@ function workLoop(deadline) {
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
     if(renderFactory.pendingCommit) {
       commitWork(renderFactory.pendingCommit)
-      console.log('last', renderFactory.pendingCommit)
       renderFactory.pendingCommit = null
     }
   }
@@ -102,17 +100,30 @@ function commitWork(fiber) {
   const effects = fiber.effects
 
   effects.forEach(effect => {
-    let parent = effect.return
     
-    while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
-      parent = parent.return
-    }
+    // 
     if(effect.effectTag === EFFECTS.PLACEMENT) {
-      (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
-    }else if(effect.effectTag === EFFECTS.UPDATE){
-      if(effect.tag === tags.HostText) {
-        effect.alternate.stateNode.nodeValue = effect.props.children[0]
+      let parent = effect.return
+    
+      while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
+        parent = parent.return
       }
+
+      (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
+    }
+    // 更新dom节点
+    else if(effect.effectTag === EFFECTS.UPDATE){
+      const node = effect.alternate.stateNode
+      // 更新文本内容
+      if(effect.tag === tags.HostText) {
+        node.nodeValue = effect.props.children[0]
+      }
+      
+      // 更新dom节点
+      else if(effect.tag === tags.HostComponent) {
+        updateDomAttr(node, effect.alternate.props, effect.props)
+      }
+      
     }
     
     if(effect.tag === tags.ClassComponent && !effect.stateNode.didMount) {
