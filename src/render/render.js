@@ -55,8 +55,20 @@ function createUnitOfWork(currentFiber) {
   // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
   if(!currentFiber.type) {
     while(currentFiber) {
+      // 在这里为组件实例更新fiber信息。
+      if(currentFiber.tag === tags.ClassComponent) {
+        console.log('update compononse', currentFiber)
+        currentFiber.stateNode.__relative = currentFiber
+      }
+
       if(currentFiber.tag === tags.HostRoot) {
         renderFactory.pendingCommit = currentFiber
+
+        if(currentFiber.stateNode.isClassComponent) {
+          console.log('update compononse in end', currentFiber === currentFiber.stateNode.__relative)
+          currentFiber.stateNode.__relative = currentFiber
+          
+        }
         return 
       }
 
@@ -98,7 +110,7 @@ function collectEffects(fiber) {
 
 function commitWork(fiber) {
   const effects = fiber.effects
-  console.log('in commit', fiber)
+  console.log(fiber, '==================================================================')
   effects.forEach(effect => {
     
     // 
@@ -132,16 +144,13 @@ function commitWork(fiber) {
     }
 
     else if(effect.effectTag === EFFECTS.DELETION) {
-      // let alternate = effect.alternate,
-      //     deleteFiber = alternate
-
-      // while(deleteFiber.tag !== tags.HostComponent) {
-      //   deleteFiber = deleteFiber.child
-      // }
-
-      console.log('in')
-
-
+      let parent = effect.return
+    
+      while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
+        parent = parent.return
+      }
+ 
+      (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.removeChild(effect.stateNode)
     }
     
     if(effect.tag === tags.ClassComponent && !effect.stateNode.didMount) {
@@ -156,8 +165,8 @@ function commitWork(fiber) {
 export function scheduleWork(instance, partialState) {
 
   renderFactory.updateQueue.push({
-    stateNode: instance,
     tag: tags.HostRoot,
+    stateNode: instance,
     partialState: partialState,
     type: instance.constructor,
     alternate: instance.__relative

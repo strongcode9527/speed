@@ -13,7 +13,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => this.setState({num: this.state.num + 1, show: !this.state.show}), 1000)
+    let num = 0
+    this.id = setInterval(() => {
+      num++
+      if(num === 2) clearInterval(this.id)
+      this.setState({num: this.state.num + 1, show: !this.state.show})
+    }, 1000)
   }
 
   render() {

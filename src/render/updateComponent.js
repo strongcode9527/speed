@@ -35,7 +35,7 @@ function updateClassComponent(fiber) {
     fiber.stateNode = instantiation
     fiber.stateNode.__relative = fiber
   }
-
+  
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
  
   return handleChildrenVnode(fiber, createChilds(fiber))
@@ -68,11 +68,11 @@ function updateTextComponent(fiber) {
  * @param {Vnode} childs 
  */
 function handleChildrenVnode(currentFiber, childs) {
-  console.log(childs)
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
 
   let prevFiber = null
   let index = 0
+  console.log(currentFiber, childs)
   while(index < childs.length || oldChildFiber) {
     let child = childs[index]
     // child 是vnode，而不是fiber
@@ -80,7 +80,10 @@ function handleChildrenVnode(currentFiber, childs) {
 
     if(typeof child === 'object') {
       newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
-    }else {
+    
+    }
+    // 这里是对于jsx合格值的筛查如果直接if(child)会有问题，那就是特殊值0，0属于false，但是他是jsx合理显示的内容。
+    else if([undefined, null, false].indexOf(child) === -1){
       newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
     }
     
@@ -89,13 +92,14 @@ function handleChildrenVnode(currentFiber, childs) {
 
     // 实例化节点,update处理多样化子节点。
     // update(newFiber) 
-    if(index === 3) {
-      console.log(child, newFiber)
-    }
-    newFiber.alternate = oldChildFiber
+  
+
+    // newFiber && (newFiber.alternate = oldChildFiber)
+
     // 更新
     if(isSame) {
       newFiber.effectTag = EFFECTS.UPDATE
+      newFiber.alternate = oldChildFiber
     }
 
     // 添加
@@ -105,8 +109,12 @@ function handleChildrenVnode(currentFiber, childs) {
 
     // 删除
     else if(!isSame && oldChildFiber){
+      console.log('in delete', newFiber)
       oldChildFiber.effectTag = EFFECTS.DELETION
-      currentFiber.effects = effects.push(oldChildFiber)
+
+      !Array.isArray(currentFiber.effects) && (currentFiber.effects = [])
+
+      currentFiber.effects.push(oldChildFiber)
     }
 
 
