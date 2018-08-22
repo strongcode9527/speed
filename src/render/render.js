@@ -98,7 +98,7 @@ function collectEffects(fiber) {
 
 function commitWork(fiber) {
   const effects = fiber.effects
-
+  console.log('in commit', fiber)
   effects.forEach(effect => {
     
     // 
@@ -108,14 +108,19 @@ function commitWork(fiber) {
       while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
         parent = parent.return
       }
-
+ 
       (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
+
+      if(effect.tag === tags.HostComponent) {
+        updateDomAttr(effect.stateNode, effect.stateNode.props, effect.props)
+      }
+
     }
     // 更新dom节点
     else if(effect.effectTag === EFFECTS.UPDATE){
       const node = effect.alternate.stateNode
       // 更新文本内容
-      if(effect.tag === tags.HostText) {
+      if(effect.tag === tags.HostText && node.nodeValue !== effect.props.children[0]) {
         node.nodeValue = effect.props.children[0]
       }
       
@@ -124,6 +129,19 @@ function commitWork(fiber) {
         updateDomAttr(node, effect.alternate.props, effect.props)
       }
       
+    }
+
+    else if(effect.effectTag === EFFECTS.DELETION) {
+      // let alternate = effect.alternate,
+      //     deleteFiber = alternate
+
+      // while(deleteFiber.tag !== tags.HostComponent) {
+      //   deleteFiber = deleteFiber.child
+      // }
+
+      console.log('in')
+
+
     }
     
     if(effect.tag === tags.ClassComponent && !effect.stateNode.didMount) {

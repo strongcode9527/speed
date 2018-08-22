@@ -68,12 +68,13 @@ function updateTextComponent(fiber) {
  * @param {Vnode} childs 
  */
 function handleChildrenVnode(currentFiber, childs) {
+  console.log(childs)
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
 
   let prevFiber = null
-
-  childs.forEach((child, index) => {
-    
+  let index = 0
+  while(index < childs.length || oldChildFiber) {
+    let child = childs[index]
     // child 是vnode，而不是fiber
     let newFiber = null
 
@@ -88,22 +89,24 @@ function handleChildrenVnode(currentFiber, childs) {
 
     // 实例化节点,update处理多样化子节点。
     // update(newFiber) 
-
+    if(index === 3) {
+      console.log(child, newFiber)
+    }
+    newFiber.alternate = oldChildFiber
     // 更新
     if(isSame) {
       newFiber.effectTag = EFFECTS.UPDATE
-      newFiber.alternate = oldChildFiber
-     
     }
 
     // 添加
-    else if(!isSame && newFiber && !oldChildFiber) {
+    else if(!isSame && newFiber) {
       newFiber.effectTag = EFFECTS.PLACEMENT
     }
 
     // 删除
     else if(!isSame && oldChildFiber){
-      
+      oldChildFiber.effectTag = EFFECTS.DELETION
+      currentFiber.effects = effects.push(oldChildFiber)
     }
 
 
@@ -119,7 +122,8 @@ function handleChildrenVnode(currentFiber, childs) {
     
     oldChildFiber = path(['sibling'], oldChildFiber)
 
-  })
+    index++ 
+  }
   
   return currentFiber
 }

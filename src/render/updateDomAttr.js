@@ -6,7 +6,7 @@ import {updateStyles, setProperty, removeProperty} from './DOM'
 const registerEvents = {}
 
 
-export default function updateDomAttr(domNode, preProps, nextProps) {
+export default function updateDomAttr(domNode, preProps = {}, nextProps = {}) {
 
   const prevKeys = Object.keys(preProps),
         nextKeys = Object.keys(nextProps),
