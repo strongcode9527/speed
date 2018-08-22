@@ -98,8 +98,11 @@ function handleChildrenVnode(currentFiber, childs) {
 
     // 更新
     if(isSame) {
-      newFiber.effectTag = EFFECTS.UPDATE
-      newFiber.alternate = oldChildFiber
+      Object.assign(newFiber, {
+        effectTag: EFFECTS.UPDATE,
+        alternate: oldChildFiber,
+        stateNode: oldChildFiber.stateNode,
+      })
     }
 
     // 添加

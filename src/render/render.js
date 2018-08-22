@@ -65,9 +65,7 @@ function createUnitOfWork(currentFiber) {
         renderFactory.pendingCommit = currentFiber
 
         if(currentFiber.stateNode.isClassComponent) {
-          console.log('update compononse in end', currentFiber === currentFiber.stateNode.__relative)
           currentFiber.stateNode.__relative = currentFiber
-          
         }
         return 
       }
