@@ -13,11 +13,11 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let num = 0
+    let numa = 0
     this.id = setInterval(() => {
-      num++
-      if(num === 2) clearInterval(this.id)
+      numa++
       this.setState({num: this.state.num + 1, show: !this.state.show})
+      // if(numa === 2) clearInterval(this.id)
     }, 1000)
   }
 
@@ -26,9 +26,9 @@ class App extends Component {
 
     return (
       <div onClick={() => {console.log('in')}} style={{background: 'red'}}>
+        <span>{num}</span> 
         <span>strong1</span>   
         <span data-index={this.state.num}>strong2</span>
-        <span>count {num}</span> 
         {
           this.state.show && <div>show</div>
         }  

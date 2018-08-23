@@ -57,13 +57,11 @@ function createUnitOfWork(currentFiber) {
     while(currentFiber) {
       // 在这里为组件实例更新fiber信息。
       if(currentFiber.tag === tags.ClassComponent) {
-        console.log('update compononse', currentFiber)
         currentFiber.stateNode.__relative = currentFiber
       }
 
       if(currentFiber.tag === tags.HostRoot) {
         renderFactory.pendingCommit = currentFiber
-
         if(currentFiber.stateNode.isClassComponent) {
           currentFiber.stateNode.__relative = currentFiber
         }
@@ -108,7 +106,6 @@ function collectEffects(fiber) {
 
 function commitWork(fiber) {
   const effects = fiber.effects
-  console.log(fiber, '==================================================================')
   effects.forEach(effect => {
     
     // 
@@ -130,7 +127,8 @@ function commitWork(fiber) {
     else if(effect.effectTag === EFFECTS.UPDATE){
       const node = effect.alternate.stateNode
       // 更新文本内容
-      if(effect.tag === tags.HostText && node.nodeValue !== effect.props.children[0]) {
+      if(effect.tag === tags.HostText && node.nodeVale !== effect.props.children[0]) {
+        console.log(node, effect.props.children[0])
         node.nodeValue = effect.props.children[0]
       }
       

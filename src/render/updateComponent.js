@@ -58,8 +58,11 @@ function updateDomComponent(fiber) {
 }
 
 function updateTextComponent(fiber) {
-  fiber.stateNode = document.createTextNode(fiber.props.children[0])
-  return fiber
+  if(!fiber.stateNode) {
+    fiber.stateNode = document.createTextNode(fiber.props.children[0])
+  }
+  
+  return handleChildrenVnode(fiber, createChilds(fiber))
 }
 
 /**
@@ -69,10 +72,9 @@ function updateTextComponent(fiber) {
  */
 function handleChildrenVnode(currentFiber, childs) {
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
-
   let prevFiber = null
   let index = 0
-  console.log(currentFiber, childs)
+  
   while(index < childs.length || oldChildFiber) {
     let child = childs[index]
     // child 是vnode，而不是fiber
@@ -80,7 +82,6 @@ function handleChildrenVnode(currentFiber, childs) {
 
     if(typeof child === 'object') {
       newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
-    
     }
     // 这里是对于jsx合格值的筛查如果直接if(child)会有问题，那就是特殊值0，0属于false，但是他是jsx合理显示的内容。
     else if([undefined, null, false].indexOf(child) === -1){
@@ -89,7 +90,7 @@ function handleChildrenVnode(currentFiber, childs) {
     
     const isSame = oldChildFiber && newFiber && oldChildFiber.type === newFiber.type
     // console.log(isSame,oldChildFiber, currentFiber, index)
-
+    
     // 实例化节点,update处理多样化子节点。
     // update(newFiber) 
   
@@ -101,8 +102,10 @@ function handleChildrenVnode(currentFiber, childs) {
       Object.assign(newFiber, {
         effectTag: EFFECTS.UPDATE,
         alternate: oldChildFiber,
+        return: currentFiber,
         stateNode: oldChildFiber.stateNode,
       })
+      console.log(isSame, child, oldChildFiber.stateNode)
     }
 
     // 添加
