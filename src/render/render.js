@@ -100,6 +100,7 @@ function collectEffects(fiber) {
   if(parent) {
     parent.effects = parent.effects || []
     parent.effects = parent.effects.concat(fiber.effects)
+    fiber.effects = []
   }
 
 }
@@ -128,7 +129,6 @@ function commitWork(fiber) {
       const node = effect.alternate.stateNode
       // 更新文本内容
       if(effect.tag === tags.HostText && node.nodeVale !== effect.props.children[0]) {
-        console.log(node, effect.props.children[0])
         node.nodeValue = effect.props.children[0]
       }
       
@@ -148,13 +148,14 @@ function commitWork(fiber) {
  
       (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.removeChild(effect.stateNode)
     }
-    
+
     if(effect.tag === tags.ClassComponent && !effect.stateNode.didMount) {
       dispatchLifeCycle(effect.stateNode, 'componentDidMount')
       effect.stateNode.didMount = true
     }
   }) 
 
+  fiber.effects = []
 
 }
 

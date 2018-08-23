@@ -105,7 +105,7 @@ function handleChildrenVnode(currentFiber, childs) {
         return: currentFiber,
         stateNode: oldChildFiber.stateNode,
       })
-      console.log(isSame, child, oldChildFiber.stateNode)
+    
     }
 
     // 添加
@@ -115,7 +115,7 @@ function handleChildrenVnode(currentFiber, childs) {
 
     // 删除
     else if(!isSame && oldChildFiber){
-      console.log('in delete', newFiber)
+    
       oldChildFiber.effectTag = EFFECTS.DELETION
 
       !Array.isArray(currentFiber.effects) && (currentFiber.effects = [])

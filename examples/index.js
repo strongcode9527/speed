@@ -13,12 +13,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let numa = 0
     this.id = setInterval(() => {
-      numa++
       this.setState({num: this.state.num + 1, show: !this.state.show})
-      // if(numa === 2) clearInterval(this.id)
     }, 1000)
+  }
+
+  componentDidUpdate() {
+    console.log('in update')
   }
 
   render() {
