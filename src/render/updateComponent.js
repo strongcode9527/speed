@@ -35,9 +35,13 @@ function updateClassComponent(fiber) {
     fiber.stateNode = instantiation
     fiber.stateNode.__relative = fiber
   }
+
   
+
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
- 
+
+  fiber.partialState = null
+  
   return handleChildrenVnode(fiber, createChilds(fiber))
 }
 

@@ -15,7 +15,7 @@ class App extends Component {
   componentDidMount() {
     this.id = setInterval(() => {
       this.setState({num: this.state.num + 1, show: !this.state.show})
-    }, 1000)
+    }, 200)
   }
 
   componentDidUpdate() {
@@ -33,6 +33,9 @@ class App extends Component {
         {
           this.state.show && <div>show</div>
         }  
+        {
+          this.state.show && <div>show1</div>
+        }
       </div>
     )
   }

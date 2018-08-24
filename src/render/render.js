@@ -14,6 +14,7 @@ export function render(element, root) {
 }
 
 function performWork(deadline) {
+  console.log('in performwork')
   workLoop(deadline)
   if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
     requestIdleCallback(performWork)
@@ -21,17 +22,19 @@ function performWork(deadline) {
 }
 
 function workLoop(deadline) {
+  console.log('in workloop', deadline.timeRemaining())
   // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
   if(!renderFactory.nextUnitOfWork) {
     createUpdateFiberFromQueue()
   }
+
   while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
-    
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
-    if(renderFactory.pendingCommit) {
-      commitWork(renderFactory.pendingCommit)
-      renderFactory.pendingCommit = null
-    }
+  }
+
+  if(renderFactory.pendingCommit) {
+    commitWork(renderFactory.pendingCommit)
+    renderFactory.pendingCommit = null
   }
 }
 
@@ -155,6 +158,8 @@ function commitWork(fiber) {
     }
   }) 
 
+  console.log(fiber, renderFactory.updateQueue.length)
+  renderFactory.nextUnitOfWork = null
   fiber.effects = []
 
 }
