@@ -36,12 +36,13 @@ function updateClassComponent(fiber) {
     fiber.stateNode.__relative = fiber
   }
 
-  
-
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
+
+  console.log(fiber.stateNode.state, createChilds(fiber))
 
   fiber.partialState = null
   
+ 
   return handleChildrenVnode(fiber, createChilds(fiber))
 }
 

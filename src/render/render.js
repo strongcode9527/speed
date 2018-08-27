@@ -1,3 +1,5 @@
+import {path} from 'ramda'
+
 import update from './updateComponent'
 import {dispatchLifeCycle} from '../utils'
 import EFFECTS from '../structure/effects'
@@ -14,7 +16,7 @@ export function render(element, root) {
 }
 
 function performWork(deadline) {
-  console.log('in performwork')
+  
   workLoop(deadline)
   if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
     requestIdleCallback(performWork)
@@ -22,7 +24,7 @@ function performWork(deadline) {
 }
 
 function workLoop(deadline) {
-  console.log('in workloop', deadline.timeRemaining())
+   
   // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
   if(!renderFactory.nextUnitOfWork) {
     createUpdateFiberFromQueue()
@@ -59,6 +61,8 @@ function createUnitOfWork(currentFiber) {
   if(!currentFiber.type) {
     while(currentFiber) {
       // 在这里为组件实例更新fiber信息。
+      collectEffects(currentFiber)
+      
       if(currentFiber.tag === tags.ClassComponent) {
         currentFiber.stateNode.__relative = currentFiber
       }
@@ -68,10 +72,11 @@ function createUnitOfWork(currentFiber) {
         if(currentFiber.stateNode.isClassComponent) {
           currentFiber.stateNode.__relative = currentFiber
         }
+        console.log('instan fibver', currentFiber)
         return 
       }
 
-      collectEffects(currentFiber)
+      
 
       if(currentFiber.sibling) {
         return currentFiber.sibling
@@ -89,8 +94,15 @@ function createUnitOfWork(currentFiber) {
 
 // 根据渲染队列，生成渲染节点。
 function createUpdateFiberFromQueue() {
+  
   const fiber = renderFactory.updateQueue.shift()
+  // 在这里设置type和alternate是为了异步问题。
 
+  if(path(['stateNode', 'isClassComponent'], fiber)) {
+    const instance = fiber.stateNode
+    fiber.type = instance.constructor,
+    fiber.alternate =  instance.__relative
+  }
   renderFactory.nextUnitOfWork = fiber
 }
 
@@ -109,7 +121,9 @@ function collectEffects(fiber) {
 }
 
 function commitWork(fiber) {
+  console.log('in commit')
   const effects = fiber.effects
+
   effects.forEach(effect => {
     
     // 
@@ -148,9 +162,11 @@ function commitWork(fiber) {
       while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
         parent = parent.return
       }
- 
+      console.log('delet', parent.stateNode, effect.stateNode);
       (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.removeChild(effect.stateNode)
     }
+
+    
 
     if(effect.tag === tags.ClassComponent && !effect.stateNode.didMount) {
       dispatchLifeCycle(effect.stateNode, 'componentDidMount')
@@ -158,7 +174,6 @@ function commitWork(fiber) {
     }
   }) 
 
-  console.log(fiber, renderFactory.updateQueue.length)
   renderFactory.nextUnitOfWork = null
   fiber.effects = []
 
@@ -170,8 +185,6 @@ export function scheduleWork(instance, partialState) {
     tag: tags.HostRoot,
     stateNode: instance,
     partialState: partialState,
-    type: instance.constructor,
-    alternate: instance.__relative
   })
 
   requestIdleCallback(performWork) //开始干活
