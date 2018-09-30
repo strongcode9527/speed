@@ -28,7 +28,10 @@ const updateProps = (propName) => {
     return updateStyle
   }else if(/^on[A-Z]/.test(propName)) {
     return updateEvent
-  }else {
+  }else if(propName === 'className') {
+    return updateClassName
+  }
+  else {
     return updateAttr
   } 
 }
@@ -73,6 +76,10 @@ function updateEvent(domNode, key, prevCallback, nextCallback) {
     !registerEvents[modifyKey] && addEvent(document, modifyKey, dispatchEvent)
     registerEvents[modifyKey] = true
   }
+}
+
+function updateClassName(domNode, key, preAtt, nextAtt) {
+  domNode[key] = nextAtt
 }
 
 function updateAttr(domNode, key, preAtt, nextAtt) {
