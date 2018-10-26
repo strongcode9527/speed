@@ -2,30 +2,16 @@
 react-like framework
 
 
-diff 所遇到的问题
+实现了基本的功能
+
+- setState
+- fiber架构
+- 异步更新
 
 
-```
- <div onClick={() => {console.log('in')}} style={{background: 'red'}}>
-  <span>strong1</span>   
-  <span data-index={this.state.num}>strong2</span>
-  <span>count {num}</span> 
-  {
-    this.state.show && <div>show</div>
-  }  
-</div>
+计划：
 
-
-// 最外层div在state为false的时候返回的children分别是['span', 'span', 'span', false]
-
-
-```
-
-
-
-
-
-
+- setState 队列更新。
 
 
 
