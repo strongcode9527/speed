@@ -179,13 +179,19 @@ function commitWork(fiber) {
 
 }
 
+// 一个问题就是fiber架构之后的react是怎样保证更新的同时性的。
 export function scheduleWork(instance, partialState) {
+
+  // 在这里进行update判断，是进行队列还是直接更新。
 
   renderFactory.updateQueue.push({
     tag: tags.HostRoot,
     stateNode: instance,
     partialState: partialState,
   })
+
+
+
 
   requestIdleCallback(performWork) //开始干活
 }
