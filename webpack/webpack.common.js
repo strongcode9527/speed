@@ -11,11 +11,18 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: ['babel-loader'],
-        exclude: /node_modules/
-      }
+        test: /\.js$|[j|t]sx?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: require.resolve('babel-loader'),
+          },
+        ],
+      },
     ]
   },
   devtool: 'inline-source-map',
+  resolve: {
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
+  },
 }
