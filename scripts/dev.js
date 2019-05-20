@@ -3,11 +3,13 @@ const devServer = require('webpack-dev-server')
 const config = require('../webpack/webpack.dev')
 const openBrowser = require('react-dev-utils/openBrowser')
 const {choosePort, createCompiler, prepareUrls} = require('react-dev-utils/WebpackDevServerUtils')
+const appName = 'speed';
+const useYarn = true
 
 choosePort('localhost', 9527)
 .then(port => {
   const urls = prepareUrls('http', 'localhost', port)
-  const compiler = createCompiler(webpack, config, 'speed', urls, true)
+  const compiler = createCompiler({webpack, config, appName, urls, useYarn})
 
   const server = new devServer(compiler, {
     contentBase: './dist',
@@ -20,4 +22,4 @@ choosePort('localhost', 9527)
     openBrowser(`http://localhost:${port}`)
   })
 
-})      
+})
