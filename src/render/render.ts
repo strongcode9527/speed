@@ -16,7 +16,7 @@ export function render(element, root) {
 }
 
 function performWork(deadline) {
-  
+
   workLoop(deadline)
   if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
     requestIdleCallback(performWork)
@@ -24,7 +24,7 @@ function performWork(deadline) {
 }
 
 function workLoop(deadline) {
-   
+
   // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
   if(!renderFactory.nextUnitOfWork) {
     createUpdateFiberFromQueue()
@@ -45,14 +45,14 @@ function workLoop(deadline) {
 
 /**
  * 返回当前fiber的子节点的第一个，并且建立所有子节点之间的关系。
- * 
+ *
  * @param {Object} currentFiber 此参数必须为已经instance后的fiber
  */
 function createUnitOfWork(currentFiber) {
 
 
   if(currentFiber.child) return currentFiber.child
-  
+
   update(currentFiber)
 
 
@@ -62,7 +62,7 @@ function createUnitOfWork(currentFiber) {
     while(currentFiber) {
       // 在这里为组件实例更新fiber信息。
       collectEffects(currentFiber)
-      
+
       if(currentFiber.tag === tags.ClassComponent) {
         currentFiber.stateNode.__relative = currentFiber
       }
@@ -73,28 +73,28 @@ function createUnitOfWork(currentFiber) {
           currentFiber.stateNode.__relative = currentFiber
         }
         console.log('instan fibver', currentFiber)
-        return 
+        return
       }
 
-      
+
 
       if(currentFiber.sibling) {
         return currentFiber.sibling
       }
-      
+
       currentFiber = currentFiber.return
     }
   }
 
-  
-  
-  // console.log(currentFiber) 
+
+
+  // console.log(currentFiber)
   return currentFiber.child
 }
 
 // 根据渲染队列，生成渲染节点。
 function createUpdateFiberFromQueue() {
-  
+
   const fiber = renderFactory.updateQueue.shift()
   // 在这里设置type和alternate是为了异步问题。
 
@@ -109,7 +109,7 @@ function createUpdateFiberFromQueue() {
 function collectEffects(fiber) {
   fiber.effects = fiber.effects || []
   fiber.effectTag && fiber.effects.push(fiber)
-  
+
   const parent = fiber.return
 
   if(parent) {
@@ -125,15 +125,15 @@ function commitWork(fiber) {
   const effects = fiber.effects
 
   effects.forEach(effect => {
-    
-    // 
+
+    //
     if(effect.effectTag === EFFECTS.PLACEMENT) {
       let parent = effect.return
-    
+
       while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
         parent = parent.return
       }
- 
+
       (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
 
       if(effect.tag === tags.HostComponent) {
@@ -148,17 +148,17 @@ function commitWork(fiber) {
       if(effect.tag === tags.HostText && node.nodeVale !== effect.props.children[0]) {
         node.nodeValue = effect.props.children[0]
       }
-      
+
       // 更新dom节点
       else if(effect.tag === tags.HostComponent) {
         updateDomAttr(node, effect.alternate.props, effect.props)
       }
-      
+
     }
 
     else if(effect.effectTag === EFFECTS.DELETION) {
       let parent = effect.return
-    
+
       while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
         parent = parent.return
       }
@@ -166,13 +166,13 @@ function commitWork(fiber) {
       (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.removeChild(effect.stateNode)
     }
 
-    
+
 
     if(effect.tag === tags.ClassComponent && !effect.stateNode.didMount) {
       dispatchLifeCycle(effect.stateNode, 'componentDidMount')
       effect.stateNode.didMount = true
     }
-  }) 
+  })
 
   renderFactory.nextUnitOfWork = null
   fiber.effects = []
