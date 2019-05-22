@@ -28,6 +28,7 @@
     "eslint": "^5.16.0",
     "eslint-loader": "^2.1.2",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^2.3.0",
     "nodemon": "^1.19.0",
     "react-dev-utils": "^9.0.1",
     "typescript": "^3.4.5",
@@ -38,7 +39,7 @@
   },
   "scripts": {
     "start": "node ./scripts/dev.js --trace-depracation",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint ./src --ext .ts,.tsx"
   },
   "repository": {
     "type": "git",
@@ -52,5 +53,10 @@
   "bugs": {
     "url": "https://github.com/strongcode9527/speed/issues"
   },
-  "homepage": "https://github.com/strongcode9527/speed#readme"
+  "homepage": "https://github.com/strongcode9527/speed#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint"
+    }
+  }
 }

@@ -8,7 +8,7 @@ import renderFactory from './renderFactory'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
 
-export function render(element, root) {
+export function render(element, root): void {
   // 将根节点放入渲染列表中。
 
   renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}))
