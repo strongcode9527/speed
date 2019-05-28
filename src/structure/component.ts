@@ -1,14 +1,13 @@
 import {scheduleWork} from '../render/render'
 
 export class Component {
-  setState(newState) {
+  public setState(newState: any): void {
     scheduleWork(this, newState)
   }
 
-  render() {
+  private render(): void {
     throw Error('you should implement render function')
   }
-
 }
 
 Component.prototype.isClassComponent = true

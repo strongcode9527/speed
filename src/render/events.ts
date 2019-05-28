@@ -4,7 +4,6 @@ export function SyntheticEvent(event, dom) {
   if (event.nativeEvent) {
       return event;
   }
-  console.log(event)
   for (var i in event) {
       if (!eventProto[i]) {
           this[i] = event[i];

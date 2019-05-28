@@ -1,7 +1,7 @@
 import {path} from 'ramda'
 
 import Tags from './componentTags'
-
+import { PropsInterface } from '../types'
 /**
  * 
  * @param {String} tag fiber类型
@@ -12,12 +12,12 @@ import Tags from './componentTags'
  * @param {Array} sibling fiber的兄弟节点
  * @param {Object} child fiber的子节点
  */
-export function createFiber(tag, type, stateNode, props = {}, Return ,sibling, child) {
+export function createFiber(tag, type, stateNode, props = {}, Return ,sibling, child): FiberInterface {
   const _tag = ['string', 'number'].indexOf(typeof type) !== -1 
-        ? Tags.HostComponent
-        : typeof type === 'undefined'
-        ? Tags.HostText
-        : path(['prototype', 'isClassComponent'], type)
+    ? Tags.HostComponent
+    : typeof type === 'undefined'
+      ? Tags.HostText
+      : path(['prototype', 'isClassComponent'], type)
         ? Tags.ClassComponent
         : Tags.FunctionalComponent
 
@@ -31,6 +31,18 @@ export function createFiber(tag, type, stateNode, props = {}, Return ,sibling, c
     tag: tag || _tag,
   }
 }
+
+
+export interface FiberInterface  {
+  tag: string;
+  type: string;
+  child: FiberInterface;
+  props: PropsInterface;
+  stateNode: HTMLElement;
+  return: FiberInterface;
+  sibling: FiberInterface;
+}
+
 
 // const Fiber = {
 //   tag: HOST_COMPONENT,
