@@ -1,17 +1,17 @@
 const componentTags: ComponentTag = {
-  HostText: 6,
+  HostText: 'text',
   HostRoot: 'root',
   HostComponent: 'host',
-  FunctionalComponent: 1,
+  FunctionalComponent: 'function',
   ClassComponent: 'class',
 };
 
 export default componentTags;
 
 export interface ComponentTag {
-  HostText: number;
+  HostText: string;
   HostRoot: string;
   HostComponent: string;
-  FunctionalComponent: number;
+  FunctionalComponent: string;
   ClassComponent: string;
 };

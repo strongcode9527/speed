@@ -12,7 +12,7 @@ import { PropsInterface } from '../types'
  * @param {Array} sibling fiber的兄弟节点
  * @param {Object} child fiber的子节点
  */
-export function createFiber(tag, type, stateNode, props = {}, Return ,sibling, child): FiberInterface {
+export function createFiber(tag: string, type: string, stateNode: HTMLElement, props: PropsInterface = {}, Return: FiberInterface ,sibling: FiberInterface, child: FiberInterface): FiberInterface {
   const _tag = ['string', 'number'].indexOf(typeof type) !== -1 
     ? Tags.HostComponent
     : typeof type === 'undefined'

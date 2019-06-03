@@ -12,6 +12,8 @@ react-like framework
 计划：
 
 - setState 队列更新。
+- hooks
+- 全面使用typescript
 
 
 

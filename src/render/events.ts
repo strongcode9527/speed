@@ -1,19 +1,19 @@
 
 /**事件合成，暂时这么写 */
-export function SyntheticEvent(event, dom) {
+export function SyntheticEvent(event, dom): void {
   if (event.nativeEvent) {
-      return event;
+    return event;
   }
   for (var i in event) {
-      if (!eventProto[i]) {
-          this[i] = event[i];
-      }
+    if (!eventProto[i]) {
+      this[i] = event[i];
+    }
   }
   
   this.currentTarget = dom
 
   if (!this.target) {
-      this.target = event.srcElement;
+    this.target = event.srcElement;
   }
   this.fixEvent();
   this.timeStamp = new Date() - 0;

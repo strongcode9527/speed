@@ -1,68 +1,15 @@
 import {path} from 'ramda'
 
-import {SyntheticEvent} from './events'
-import {updateStyles, setProperty, removeProperty} from './DOM'
-
+import { SyntheticEvent } from './events'
+import { updateStyles, setProperty, removeProperty } from './DOM'
+import { HTMLElementSpeed } from '../types'
 const registerEvents = {}
 
-
-export default function updateDomAttr(domNode, preProps = {}, nextProps = {}) {
-
-  const prevKeys = Object.keys(preProps),
-        nextKeys = Object.keys(nextProps),
-        allUniqueKeys = [...(new Set([...prevKeys, ...nextKeys]))] 
-
-    allUniqueKeys.forEach(key => {
-      if(key !== 'children' && preProps[key] !== nextProps[key]) {
-        updateProps(key)(domNode, key, preProps[key], nextProps[key])
-      }
-    })
+function addEvent(dom: HTMLElement, key: string, callback): void {
+  dom.addEventListener(key, callback, false )
 }
 
-
-
-const updateProps = (propName) => {
-  if(propName === 'ref') {
-    return 'ref'
-  }else if(propName === 'style') {
-    return updateStyle
-  }else if(/^on[A-Z]/.test(propName)) {
-    return updateEvent
-  }else if(propName === 'className') {
-    return updateClassName
-  }
-  else {
-    return updateAttr
-  } 
-}
-
-function updateStyle(domNode, key, preStyle = {}, nextStyle = {}) {
-  let styleUpdates = {},
-      nextKeys = Object.keys(nextStyle)
-  // 添加修改
-  nextKeys.forEach(key => {
-    let pre = preStyle[key],
-        next = nextStyle[key]
-    if(pre !== next) {
-      styleUpdates[key] = next
-    }
-
-    if(pre) {
-      delete preStyle[key]
-    }
-  })
-  
-  let preKeys = Object.keys(preStyle)
-
-  preKeys.forEach(key => {
-    styleUpdates[key] = ''
-  })
-
-
-  updateStyles(domNode, styleUpdates)
-}
-
-function updateEvent(domNode, key, prevCallback, nextCallback) {
+function updateEvent(domNode: HTMLElementSpeed, key: string, prevCallback, nextCallback): void {
   const modifyKey = key.slice(2).toLocaleLowerCase()
   if(!nextCallback) {
     domNode._events[modifyKey] = undefined
@@ -78,13 +25,13 @@ function updateEvent(domNode, key, prevCallback, nextCallback) {
   }
 }
 
-function updateClassName(domNode, key, preAtt, nextAtt) {
+function updateClassName(domNode, key, preAtt, nextAtt): void {
   domNode[key] = nextAtt
 }
 
-function updateAttr(domNode, key, preAtt, nextAtt) {
+function updateAttr(domNode, key, preAtt, nextAtt): boolean {
   if(preAtt === nextAtt) {
-    return
+    return false;
   }else if(preAtt && typeof nextAtt === 'undefined') {
     removeProperty(domNode, key)
   }else {
@@ -92,12 +39,71 @@ function updateAttr(domNode, key, preAtt, nextAtt) {
   }
 }
 
-function addEvent(dom, key, callback) {
-  dom.addEventListener(key, callback, false )
+function updateStyle(domNode, key, preStyle = {}, nextStyle = {}): void {
+  let styleUpdates = {};
+  const nextKeys = Object.keys(nextStyle);
+  // 添加修改
+  nextKeys.forEach((key: string): void => {
+    let pre = preStyle[key]
+    let next = nextStyle[key]
+    if(pre !== next) {
+      styleUpdates[key] = next
+    }
+
+    if(pre) {
+      delete preStyle[key]
+    }
+  })
+  
+  let preKeys = Object.keys(preStyle)
+
+  preKeys.forEach((key: string): void => {
+    styleUpdates[key] = ''
+  })
+
+
+  updateStyles(domNode, styleUpdates)
 }
 
+const updateProps = (propName: string): any => {
+  if(propName === 'ref') {
+    return 'ref'
+  }else if(propName === 'style') {
+    return updateStyle
+  }else if(/^on[A-Z]/.test(propName)) {
+    return updateEvent
+  }else if(propName === 'className') {
+    return updateClassName
+  }
+  else {
+    return updateAttr
+  } 
+}
+
+export default function updateDomAttr(domNode, preProps = {}, nextProps = {}): void {
+
+  const prevKeys = Object.keys(preProps)
+  const nextKeys = Object.keys(nextProps)
+  const allUniqueKeys = [...(new Set([...prevKeys, ...nextKeys]))] 
+
+  allUniqueKeys.forEach((key: string): void => {
+    if(key !== 'children' && preProps[key] !== nextProps[key]) {
+      updateProps(key)(domNode, key, preProps[key], nextProps[key])
+    }
+  })
+}
+
+
+
+
+
+
+
+
+
+
 // 真正的执行函数。
-function dispatchEvent(e) {
+function dispatchEvent(e): void {
   
   let path = detectPath(e)
 
@@ -105,20 +111,21 @@ function dispatchEvent(e) {
 }
 
 
-function triggerEvents(e, _path) {
-  const {type} = e
+function triggerEvents(e, _path: array): void {
+  const { type } = e
         
   
-  _path.every(domNode => {
-    const callback = path(['_events', type], domNode),
-          event = new SyntheticEvent(e, domNode)
+  _path.every((domNode): boolean => {
+    const callback = path(['_events', type], domNode)
+    const event = new SyntheticEvent(e, domNode)
     callback && callback.call(domNode, event)
 
     // 如果禁止冒泡，则停止循环
     if(event._stopPropagation) return false
     
     return true
-  }) 
+  })
+
 }
 
 function detectPath(e, end) {
