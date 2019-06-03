@@ -1,6 +1,7 @@
 
 /**事件合成，暂时这么写 */
 export function SyntheticEvent(event, dom): void {
+  console.log('event', event)
   if (event.nativeEvent) {
     return event;
   }
@@ -24,12 +25,12 @@ export function SyntheticEvent(event, dom): void {
 
 var eventProto = SyntheticEvent.prototype = {
   fixEvent: function fixEvent() { }, //留给以后扩展用
-  preventDefault: function preventDefault() {
-      var e = this.nativeEvent || {};
-      e.returnValue = this.returnValue = false;
-      if (e.preventDefault) {
-          e.preventDefault();
-      }
+  preventDefault: function preventDefault(): void {
+    var e = this.nativeEvent || {};
+    e.returnValue = this.returnValue = false;
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
   },
   fixHooks: function fixHooks() { },
   stopPropagation: function stopPropagation() {
@@ -41,11 +42,10 @@ var eventProto = SyntheticEvent.prototype = {
   },
   persist: function noop() { },
   stopImmediatePropagation: function stopImmediatePropagation() {
-      this.stopPropagation();
-      this.stopImmediate = true;
+    this.stopPropagation();
+    this.stopImmediate = true;
   },
   toString: function toString() {
-      return "[object Event]";
+    return "[object Event]";
   }
 };
-

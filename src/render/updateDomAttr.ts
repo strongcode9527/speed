@@ -5,7 +5,7 @@ import { updateStyles, setProperty, removeProperty } from './DOM'
 import { HTMLElementSpeed } from '../types'
 const registerEvents = {}
 
-function addEvent(dom: HTMLElement, key: string, callback): void {
+function addEvent(dom: HTMLElement | HTMLDocument, key: string, callback): void {
   dom.addEventListener(key, callback, false )
 }
 
@@ -95,23 +95,27 @@ export default function updateDomAttr(domNode, preProps = {}, nextProps = {}): v
 
 
 
+function detectPath(e: Event, end: HTMLElement | HTMLDocument): [HTMLElement] {
+  let { target , type } = e
+  const _path: [HTMLElement] = [target as HTMLElement]
 
+  end = end || document
 
+  while(target !== end && target) {
+    target = (target as HTMLElement).parentNode;
 
+    if(!target) break
 
+    if(path(['_events', type], target)) {
+      _path.push(target as HTMLElement)
+    }
+  }
 
-
-
-// 真正的执行函数。
-function dispatchEvent(e): void {
-  
-  let path = detectPath(e)
-
-  triggerEvents(e, path)
+  return _path
 }
 
 
-function triggerEvents(e, _path: array): void {
+function triggerEvents(e: Event, _path: [HTMLElement]): void {
   const { type } = e
         
   
@@ -128,23 +132,18 @@ function triggerEvents(e, _path: array): void {
 
 }
 
-function detectPath(e, end) {
-  let {target, type} = e,
-      _path = [target]
 
-  end = end || document
+// 真正的执行函数。
+function dispatchEvent(e: TouchEvent): void {
+  
+  let path: [HTMLElement] = detectPath(e, document)
 
-  while(target !== end && target) {
-    target = target.parentNode
-
-    if(!target) break
-
-    if(path(['_events', type], target)) {
-      _path.push(target)
-    }
-  }
-
-  return _path
+  triggerEvents(e, path)
 }
+
+
+
+
+
 
 
