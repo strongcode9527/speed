@@ -1,14 +1,14 @@
-import {path} from 'ramda'
+import {path} from 'ramda';
 
-import update from './updateComponent'
-import {dispatchLifeCycle} from '../utils'
-import EFFECTS from '../structure/effects'
-import updateDomAttr from './updateDomAttr'
-import renderFactory from './renderFactory'
-import tags from '../structure/componentTags'
-import {createFiber} from '../structure/fiber'
+import update from './updateComponent';
+import {dispatchLifeCycle} from '../utils';
+import EFFECTS from '../structure/effects';
+import updateDomAttr from './updateDomAttr';
+import renderFactory from './renderFactory';
+import tags from '../structure/componentTags';
+import {createFiber} from '../structure/fiber';
 
-export function render(element, root): void {
+export function render(element: HTMLElement, root): void {
   // 将根节点放入渲染列表中。
 
   renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}))

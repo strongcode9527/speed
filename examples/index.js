@@ -30,7 +30,7 @@ class App extends Component {
         <span>{num}</span> 
         <span data-index={this.state.num}>strong2</span>
         {
-          this.state.show && <div>show</div>
+          this.state.show && <div onClick={(e) => {console.log('in child'); e.stopPropagation();}}>show</div>
         }  
       </div>
     )

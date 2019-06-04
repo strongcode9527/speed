@@ -1,7 +1,7 @@
 
 /**事件合成，暂时这么写 */
 export function SyntheticEvent(event, dom): void {
-  console.log('event', event)
+  console.log('event', event, dom)
   if (event.nativeEvent) {
     return event;
   }

@@ -116,13 +116,11 @@ function detectPath(e: Event, end: HTMLElement | HTMLDocument): [HTMLElement] {
 
 
 function triggerEvents(e: Event, _path: [HTMLElement]): void {
-  const { type } = e
-        
-  
+  const { type } = e;
   _path.every((domNode): boolean => {
-    const callback = path(['_events', type], domNode)
-    const event = new SyntheticEvent(e, domNode)
-    callback && callback.call(domNode, event)
+    const callback = path(['_events', type], domNode);
+    const event = new SyntheticEvent(e, domNode);
+    callback && callback.call(domNode, event);
 
     // 如果禁止冒泡，则停止循环
     if(event._stopPropagation) return false
