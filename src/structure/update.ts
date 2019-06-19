@@ -1,7 +1,7 @@
-import batchingStrategy from './batchingStrategy'
+import batchingStrategy from './batchingStrategy';
 
 export default {
-  enqueueUpdate(Component) {
+  enqueueUpdate(Component): void {
     
     // 直接更新
     if (!batchingStrategy.isBatchingUpdates) {

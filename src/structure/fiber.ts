@@ -1,7 +1,7 @@
-import {path} from 'ramda'
+import {path} from 'ramda';
 
-import Tags from './componentTags'
-import { PropsInterface } from '../types'
+import Tags from './componentTags';
+import { PropsInterface } from '../types';
 /**
  * 
  * @param {String} tag fiber类型
@@ -19,7 +19,7 @@ export function createFiber(tag: string, type: string, stateNode: HTMLElement, p
       ? Tags.HostText
       : path(['prototype', 'isClassComponent'], type)
         ? Tags.ClassComponent
-        : Tags.FunctionalComponent
+        : Tags.FunctionalComponent;
 
   return {
     type,
@@ -29,7 +29,7 @@ export function createFiber(tag: string, type: string, stateNode: HTMLElement, p
     stateNode,
     return: Return,
     tag: tag || _tag,
-  }
+  };
 }
 
 

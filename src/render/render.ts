@@ -11,15 +11,15 @@ import {createFiber} from '../structure/fiber';
 export function render(element: HTMLElement, root): void {
   // 将根节点放入渲染列表中。
 
-  renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}))
-  requestIdleCallback(performWork)
+  renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}));
+  requestIdleCallback(performWork);
 }
 
-function performWork(deadline) {
+function performWork(deadline): void {
 
-  workLoop(deadline)
+  workLoop(deadline);
   if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
-    requestIdleCallback(performWork)
+    requestIdleCallback(performWork);
   }
 }
 
@@ -27,16 +27,16 @@ function workLoop(deadline) {
 
   // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
   if(!renderFactory.nextUnitOfWork) {
-    createUpdateFiberFromQueue()
+    createUpdateFiberFromQueue();
   }
 
   while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
-    renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
+    renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork);
   }
 
   if(renderFactory.pendingCommit) {
-    commitWork(renderFactory.pendingCommit)
-    renderFactory.pendingCommit = null
+    commitWork(renderFactory.pendingCommit);
+    renderFactory.pendingCommit = null;
   }
 }
 
