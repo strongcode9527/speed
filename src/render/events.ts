@@ -27,6 +27,7 @@ var eventProto = SyntheticEvent.prototype = {
   }
 };
 
+
 /**事件合成，暂时这么写 */
 export function SyntheticEvent(event, dom): void {
   if (event.nativeEvent) {
@@ -48,5 +49,3 @@ export function SyntheticEvent(event, dom): void {
   this.timeStamp = date.valueOf();
   this.nativeEvent = event;
 }
-
-

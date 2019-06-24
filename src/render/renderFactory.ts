@@ -3,4 +3,4 @@ export default {
   updateQueue: [],
   pendingCommit: null,
   nextUnitOfWork: null,
-}
+};
