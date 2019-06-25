@@ -15,4 +15,4 @@ export default {
       component._updateBatchNumber = updateBatchNumber + 1;
     }
   }
-}
+};

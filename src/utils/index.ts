@@ -1,4 +1,6 @@
-import assert from 'assert'
+import assert from 'assert';
+
+import { VirtualNodeInterface } from './../structure/Vnode';
 
 /**
  *
@@ -7,22 +9,14 @@ import assert from 'assert'
  * @param {Object | Array} child
  * @returns array
  */
-export function createArrayChild(child) {
-  return Array.isArray(child) ? child : [child]
+export function createArrayChild(child: VirtualNodeInterface | VirtualNodeInterface[]): VirtualNodeInterface[]  {
+  return Array.isArray(child) ? child : [child];
 }
 
-
-
-export function dispatchLifeCycle(instance, funcName) {
+export function dispatchLifeCycle(instance, funcName): void {
   if(typeof instance !== 'object' || typeof funcName !== 'string') {
-    assert('dispatch')
+    assert('dispatch');
   }
   // TODO: 声明周期的参数填写，包括didUpdate和willReceiveProps等
-  instance[funcName] && typeof instance[funcName] === 'function' && instance[funcName]()
+  instance[funcName] && typeof instance[funcName] === 'function' && instance[funcName]();
 }
-
-
-
-
-
-

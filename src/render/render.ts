@@ -22,43 +22,6 @@ function collectEffects(fiber: FiberInterface): void {
 
 }
 
-function workLoop(deadline): void {
-
-  // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
-  if(!renderFactory.nextUnitOfWork) {
-    createUpdateFiberFromQueue();
-  }
-
-  while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
-    renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork);
-  }
-
-  if(renderFactory.pendingCommit) {
-    commitWork(renderFactory.pendingCommit);
-    renderFactory.pendingCommit = null;
-  }
-}
-
-export function render(element: HTMLElement, root): void {
-  // 将根节点放入渲染列表中。
-
-  renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}));
-  requestIdleCallback(performWork);
-}
-
-function performWork(deadline): void {
-
-  workLoop(deadline);
-  if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
-    requestIdleCallback(performWork);
-  }
-}
-
-
-
-
-
-
 /**
  * 返回当前fiber的子节点的第一个，并且建立所有子节点之间的关系。
  *
@@ -122,8 +85,6 @@ function createUpdateFiberFromQueue(): void {
   renderFactory.nextUnitOfWork = fiber;
 }
 
-
-
 function commitWork(fiber): void {
   const effects = fiber.effects;
 
@@ -137,10 +98,10 @@ function commitWork(fiber): void {
         parent = parent.return;
       }
 
-      (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode)
+      (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.appendChild(effect.stateNode);
 
       if(effect.tag === tags.HostComponent) {
-        updateDomAttr(effect.stateNode, effect.stateNode.props, effect.props)
+        updateDomAttr(effect.stateNode, effect.stateNode.props, effect.props);
       }
 
     }
@@ -154,7 +115,7 @@ function commitWork(fiber): void {
 
       // 更新dom节点
       else if(effect.tag === tags.HostComponent) {
-        updateDomAttr(node, effect.alternate.props, effect.props)
+        updateDomAttr(node, effect.alternate.props, effect.props);
       }
 
     }
@@ -165,8 +126,7 @@ function commitWork(fiber): void {
       while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
         parent = parent.return;
       }
-      console.log('delet', parent.stateNode, effect.stateNode);
-      (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.removeChild(effect.stateNode)
+      (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.removeChild(effect.stateNode);
     }
 
 
@@ -181,6 +141,40 @@ function commitWork(fiber): void {
   fiber.effects = [];
 
 }
+
+function workLoop(deadline): void {
+
+  // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
+  if(!renderFactory.nextUnitOfWork) {
+    createUpdateFiberFromQueue();
+  }
+
+  while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
+    renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork);
+  }
+
+  if(renderFactory.pendingCommit) {
+    commitWork(renderFactory.pendingCommit);
+    renderFactory.pendingCommit = null;
+  }
+}
+
+function performWork(deadline): void {
+
+  workLoop(deadline);
+  if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
+    window.requestIdleCallback(performWork);
+  }
+}
+
+
+export function render(element: HTMLElement, root): void {
+  // 将根节点放入渲染列表中。
+
+  renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}, null, null, null, null));
+  window.requestIdleCallback(performWork);
+}
+
 
 // 一个问题就是fiber架构之后的react是怎样保证更新的同时性的。
 export function scheduleWork(instance, partialState): void {
@@ -198,3 +192,4 @@ export function scheduleWork(instance, partialState): void {
   //开始干活
   window.requestIdleCallback(performWork); 
 }
+

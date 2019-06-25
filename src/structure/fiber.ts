@@ -12,7 +12,7 @@ import { PropsInterface } from '../types';
  * @param {Array} sibling fiber的兄弟节点
  * @param {Object} child fiber的子节点
  */
-export function createFiber(tag: string, type: string, stateNode: HTMLElement, props: PropsInterface, Return: FiberInterface ,sibling: FiberInterface, child: FiberInterface): FiberInterface {
+export function createFiber(tag: string, type: string, stateNode: HTMLElement, props: PropsInterface, Return: FiberInterface ,sibling: FiberInterface, child: FiberInterface, alternate: FiberInterface): FiberInterface {
   const _tag = ['string', 'number'].indexOf(typeof type) !== -1 
     ? Tags.HostComponent
     : typeof type === 'undefined'
@@ -27,8 +27,9 @@ export function createFiber(tag: string, type: string, stateNode: HTMLElement, p
     child,
     sibling,
     stateNode,
+    alternate,
     effects: [],
-    effectTag: '',
+    effectTag: 0,
     return: Return,
     tag: tag || _tag,
   };
@@ -38,13 +39,14 @@ export function createFiber(tag: string, type: string, stateNode: HTMLElement, p
 export interface FiberInterface  {
   tag: string;
   type: string;
-  effectTag: string;
+  effectTag: number;
   child: FiberInterface;
   props: PropsInterface;
   stateNode: HTMLElement;
   return: FiberInterface;
   sibling: FiberInterface;
   effects: FiberInterface[];
+  alternate: FiberInterface;
 }
 
 

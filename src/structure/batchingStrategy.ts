@@ -1,9 +1,7 @@
-
-
 const ReactDefaultBatchingStrategy = {
   isBatchingUpdates: false,
 
-  batchedUpdates: function(callback, a, b, c, d, e) {
+  batchedUpdates: function(callback, a, b, c, d, e): void {
     var alreadyBatchingUpdates = ReactDefaultBatchingStrategy.isBatchingUpdates;
 
     ReactDefaultBatchingStrategy.isBatchingUpdates = true;
@@ -16,4 +14,4 @@ const ReactDefaultBatchingStrategy = {
   }
 };
 
-export default ReactDefaultBatchingStrategy
+export default ReactDefaultBatchingStrategy;
