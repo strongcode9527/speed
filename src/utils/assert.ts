@@ -1,5 +1,5 @@
-export default function assert(str) {
-  throw new Error(str)
+export default function assert(str: string): void {
+  throw new Error(str);
 }
 
 

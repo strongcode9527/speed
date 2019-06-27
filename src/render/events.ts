@@ -1,5 +1,26 @@
-// preventDefault和stopPropagation竟然是原生拦截？
+/**事件合成，暂时这么写 */
+export function SyntheticEvent(event, dom): void {
+  if (event.nativeEvent) {
+    return event;
+  }
+  for (var i in event) {
+    if (!eventProto[i]) { // eslint-disable-line
+      this[i] = event[i];
+    }
+  }
+  
+  this.currentTarget = dom;
 
+  if (!this.target) {
+    this.target = event.srcElement;
+  }
+  this.fixEvent();
+  const date = new Date();
+  this.timeStamp = date.valueOf();
+  this.nativeEvent = event;
+}
+
+// preventDefault和stopPropagation竟然是原生拦截？
 var eventProto = SyntheticEvent.prototype = {
   fixEvent: function fixEvent(): void { }, //留给以后扩展用
   preventDefault: function preventDefault(): void {
@@ -26,26 +47,3 @@ var eventProto = SyntheticEvent.prototype = {
     return "[object Event]";
   }
 };
-
-
-/**事件合成，暂时这么写 */
-export function SyntheticEvent(event, dom): void {
-  if (event.nativeEvent) {
-    return event;
-  }
-  for (var i in event) {
-    if (!eventProto[i]) {
-      this[i] = event[i];
-    }
-  }
-  
-  this.currentTarget = dom;
-
-  if (!this.target) {
-    this.target = event.srcElement;
-  }
-  this.fixEvent();
-  const date = new Date();
-  this.timeStamp = date.valueOf();
-  this.nativeEvent = event;
-}
