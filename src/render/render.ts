@@ -171,7 +171,7 @@ function performWork(deadline): void {
 export function render(element: HTMLElement, root): void {
   // 将根节点放入渲染列表中。
 
-  renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}, null, null, null, null));
+  renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}, null, null, null, null, null));
   window.requestIdleCallback(performWork);
 }
 
