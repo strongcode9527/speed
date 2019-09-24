@@ -6,7 +6,8 @@ import EFFECTS from '../structure/effects';
 import updateDomAttr from './updateDomAttr';
 import renderFactory from './renderFactory';
 import tags from '../structure/componentTags';
-import { createFiber, FiberInterface } from '../structure/fiber';
+import { VirtualNodeInterface } from '../structure/Vnode';
+import { createFiber, FiberInterface, OwnHTMLElement } from '../structure/fiber';
 
 function collectEffects(fiber: FiberInterface): void {
   fiber.effects = fiber.effects || [];
@@ -159,16 +160,24 @@ function workLoop(deadline): void {
   }
 }
 
+/**
+ * 
+ * @param deadline 
+ */
 function performWork(deadline): void {
 
   workLoop(deadline);
   if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
     window.requestIdleCallback(performWork);
   }
-}
+}，
 
-
-export function render(element: HTMLElement, root): void {
+/**
+ * 
+ * @param element 有babel编译出来的虚拟节点
+ * @param root react组件挂载的html节点
+ */
+export function render(element: VirtualNodeInterface, root: OwnHTMLElement): void {
   // 将根节点放入渲染列表中。
 
   renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}, null, null, null, null, null));
