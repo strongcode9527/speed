@@ -170,7 +170,7 @@ function performWork(deadline): void {
   if(renderFactory.nextUnitOfWork || renderFactory.updateQueue.length > 0) {
     window.requestIdleCallback(performWork);
   }
-}，
+}
 
 /**
  * 
