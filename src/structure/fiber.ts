@@ -33,6 +33,8 @@ export function createFiber(tag: string, type: string, stateNode: FiberInterface
     effectTag: 0,
     return: Return,
     tag: tag || _tag,
+    expirationTime: 0,
+    memoizedState: undefined
   };
 }
 
@@ -44,14 +46,16 @@ export interface FiberInterface  {
   tag: string;
   type: string;
   effectTag: number;
+  memoizedState: any; // 旧的state
   child: FiberInterface;
   props: PropsInterface;
-  stateNode: FiberInterface | OwnHTMLElement;
+  expirationTime: number; // 任务过期时间
   return: FiberInterface;
   sibling: FiberInterface;
   effects: FiberInterface[];
   alternate: FiberInterface;
   __relative: FiberInterface;
+  stateNode: FiberInterface | OwnHTMLElement;
 }
 
 
