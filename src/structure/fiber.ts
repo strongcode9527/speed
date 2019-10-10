@@ -52,6 +52,7 @@ export interface FiberInterface  {
   expirationTime: number; // 任务过期时间
   return: FiberInterface;
   sibling: FiberInterface;
+  updateQueue: any; //TODO 待定这个东西需要一个更新队列的json
   effects: FiberInterface[];
   alternate: FiberInterface;
   __relative: FiberInterface;
