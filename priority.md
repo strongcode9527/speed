@@ -152,3 +152,7 @@ inter 1571122690043 2875262770 2875262742
 inter 1571122690053 2875262769 2875262742
 inter 1571122690093 2875262765 2875262732
 inter 1571122690183 2875262756 2875262722
+
+### 结论：
+
+首先priority的设置是在scheduler.unstable_runWithPriority,然后在每一次的setState中都先获取scheduler.unstable_getCurrentPriorityLevel 中的priority。
