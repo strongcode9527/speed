@@ -156,3 +156,7 @@ inter 1571122690183 2875262756 2875262722
 ### 结论：
 
 首先priority的设置是在scheduler.unstable_runWithPriority,然后在每一次的setState中都先获取scheduler.unstable_getCurrentPriorityLevel 中的priority。
+
+
+// earliestPendingTime： 最高优先级expirationTime
+// latestPendingTime： 最低优先级expirationTime
