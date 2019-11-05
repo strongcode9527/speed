@@ -22,6 +22,10 @@ class App extends Component {
     console.log('in update')
   }
 
+  handleClick = () => {
+    console.log('insssss');
+  }
+
   render() {
     const {num} = this.state
 

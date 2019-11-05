@@ -1,7 +1,7 @@
 import {path} from 'ramda'
 
 import update from './updateComponent'
-import {dispatchLifeCycle} from '../utils'
+import { dispatchLifeCycle } from '../utils'
 import EFFECTS from '../structure/effects'
 import updateDomAttr from './updateDomAttr'
 import renderFactory from './renderFactory'
