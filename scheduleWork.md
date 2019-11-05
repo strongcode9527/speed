@@ -36,6 +36,10 @@ function scheduleWork(fiber, expirationTime) {
 
 
 ```
+// 这个函数其实就是设置root的最高优先级和最低优先级
+
+
+
 function markPendingPriorityLevel(root, expirationTime) {
   // If there's a gap between completing a failed root and retrying it,
   // additional updates may be scheduled. Clear `didError`, in case the update
