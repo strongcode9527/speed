@@ -118,6 +118,7 @@ function collectEffects(fiber) {
 }
 
 function commitWork(fiber) {
+  console.log('in commit')
   const effects = fiber.effects
   console.log('incommitj', fiber)
   effects.forEach(effect => {
