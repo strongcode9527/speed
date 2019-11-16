@@ -7,22 +7,36 @@ class App extends Component {
 
     this.state = {
       num: 0,
+      show: true
     }
 
   }
 
   componentDidMount() {
-    setTimeout(() => this.setState({num: this.state.num + 1}))
+    // this.id = setInterval(() => {
+    //   this.setState({num: this.state.num + 1, show: !this.state.show})
+    // }, 1)
+  }
+
+  componentDidUpdate() {
+    console.log('in update')
+  }
+
+  handleClick = () => {
+    console.log('insssss');
   }
 
   render() {
     const {num} = this.state
 
     return (
-      <div onClick={() => {}}>
-        <span>strong1</span>   
-        <span>strong2</span>
-        <span>count {num}</span>   
+      <div style={{background: 'red'}} className="container">
+        <span>{num}</span> 
+        <span data-index={this.state.num}>strong2</span>
+        {
+          this.state.show && <div>show</div>
+        }
+        <div dangersInnerHTML="strongInnerhtml"></div>
       </div>
     )
   }

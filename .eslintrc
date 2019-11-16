@@ -1,5 +1,4 @@
 {
-  "parser": "babel-eslint",
   "rules": {
     "no-console": "off",
     "no-alert": "off"
@@ -8,5 +7,12 @@
     "browser": true,
     "node": true
   },
-  "extends": "eslint:recommended"
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+        "jsx": true
+    }
+  }
 }

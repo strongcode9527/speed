@@ -14,6 +14,8 @@ import Tags from './componentTags'
  */
 export function createFiber(tag, type, stateNode, props = {}, Return ,sibling, child) {
   const _tag = ['string', 'number'].indexOf(typeof type) !== -1 
+        ? Tags.HostComponent
+        : typeof type === 'undefined'
         ? Tags.HostText
         : path(['prototype', 'isClassComponent'], type)
         ? Tags.ClassComponent

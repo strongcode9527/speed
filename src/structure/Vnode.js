@@ -1,7 +1,7 @@
 export function createVnode(type, props, children) {
   return {
-    type, 
+    type,
     children,
-    props: {...props, children: children},
+    props: { ...props, children: children },
   }
 }
