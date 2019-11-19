@@ -14,6 +14,9 @@ export function updateStyles(node, styleObj) {
 
 export function setProperty(node, attr, value) {
   if (attr === 'children')  return
+  if(attr === 'dangersInnerHTML') {
+    node.innerHTML = value;
+  }
   node.setAttribute(attr, value)
 }
 

@@ -1,6 +1,7 @@
 {
   "presets": ["@babel/preset-env"],
   "plugins": [
-    ["@babel/plugin-transform-react-jsx", {"pragma": "Speed.createElement"}]
+    ["@babel/plugin-transform-react-jsx", {"pragma": "Speed.createElement"}],
+    "@babel/plugin-proposal-class-properties"
   ]
 }

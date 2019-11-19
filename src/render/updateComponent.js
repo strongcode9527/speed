@@ -38,8 +38,6 @@ function updateClassComponent(fiber) {
 
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
 
-  console.log(fiber.stateNode.state, createChilds(fiber))
-
   fiber.partialState = null
   
  
@@ -79,7 +77,6 @@ function handleChildrenVnode(currentFiber, childs) {
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
   let prevFiber = null
   let index = 0
-  
   while(index < childs.length || oldChildFiber) {
     let child = childs[index]
     // child 是vnode，而不是fiber
@@ -91,6 +88,9 @@ function handleChildrenVnode(currentFiber, childs) {
     // 这里是对于jsx合格值的筛查如果直接if(child)会有问题，那就是特殊值0，0属于false，但是他是jsx合理显示的内容。
     else if([undefined, null, false].indexOf(child) === -1){
       newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
+    } else {
+      index++;
+      continue;
     }
     
     const isSame = oldChildFiber && newFiber && oldChildFiber.type === newFiber.type

@@ -1,0 +1,76 @@
+{
+  "status": 13,
+  "message": null,
+  "data": {
+    "firstShow": true,
+    "helpNum": 2,
+    "helpOtherSuccess": false,
+    "helpPhotos": [
+      {
+        "headShot": "0.jpg",
+        "helpTime": 1573109766933,
+        "nickName": "tjn0"
+      },
+      {
+        "headShot": "1.jpg",
+        "helpTime": 1573109766933,
+        "nickName": "tjn1"
+      },
+      {
+        "headShot": "2.jpg",
+        "helpTime": 1573109766933,
+        "nickName": "tjn2"
+      },
+      {
+        "headShot": "3.jpg",
+        "helpTime": 1573109766933,
+        "nickName": "tjn3"
+      },
+      {
+        "headShot": "4.jpg",
+        "helpTime": 1573109766933,
+        "nickName": "tjn4"
+      }
+    ],
+    "shareToekn": "sadfawefvsdvzv",
+    "updateSuccess": false,
+    "wxAwardList": [
+      {
+        "awardId": "1",
+        "awardName": "20立减",
+        "awardValue": 20,
+        "explain": "最高减20元",
+        "needFriends": 1,
+        "photo": "1.jpg",
+        "status": 1
+      },
+      {
+        "awardId": "2",
+        "awardName": "40立减",
+        "awardValue": 40,
+        "explain": "最高减40元",
+        "needFriends": 2,
+        "photo": "2.jpg",
+        "status": 1
+      },
+      {
+        "awardId": "3",
+        "awardName": "60立减",
+        "awardValue": 60,
+        "explain": "最高减60元",
+        "needFriends": 3,
+        "photo": "3.jpg",
+        "status": 1
+      },
+      {
+        "awardId": "4",
+        "awardName": "80立减",
+        "awardValue": 80,
+        "explain": "最高减80元",
+        "needFriends": 4,
+        "photo": "4.jpg",
+        "status": 1
+      }
+    ]
+  }
+}

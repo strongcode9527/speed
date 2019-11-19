@@ -10,7 +10,6 @@ import {createFiber} from '../structure/fiber'
 
 export function render(element, root) {
   // 将根节点放入渲染列表中。
-
   renderFactory.updateQueue.push(createFiber(tags.HostRoot, root.nodeName.toLowerCase(), root, {children: element}))
   requestIdleCallback(performWork)
 }
@@ -55,10 +54,8 @@ function createUnitOfWork(currentFiber) {
   
   update(currentFiber)
 
-
-
   // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
-  if(!currentFiber.type) {
+  if(!currentFiber.type || currentFiber.child === undefined) {
     while(currentFiber) {
       // 在这里为组件实例更新fiber信息。
       collectEffects(currentFiber)
@@ -72,7 +69,6 @@ function createUnitOfWork(currentFiber) {
         if(currentFiber.stateNode.isClassComponent) {
           currentFiber.stateNode.__relative = currentFiber
         }
-        console.log('instan fibver', currentFiber)
         return 
       }
 
@@ -85,10 +81,6 @@ function createUnitOfWork(currentFiber) {
       currentFiber = currentFiber.return
     }
   }
-
-  
-  
-  // console.log(currentFiber) 
   return currentFiber.child
 }
 
@@ -121,9 +113,7 @@ function collectEffects(fiber) {
 }
 
 function commitWork(fiber) {
-  console.log('in commit')
   const effects = fiber.effects
-
   effects.forEach(effect => {
     
     // 
@@ -145,7 +135,7 @@ function commitWork(fiber) {
     else if(effect.effectTag === EFFECTS.UPDATE){
       const node = effect.alternate.stateNode
       // 更新文本内容
-      if(effect.tag === tags.HostText && node.nodeVale !== effect.props.children[0]) {
+      if(effect.tag === tags.HostText) {
         node.nodeValue = effect.props.children[0]
       }
       
@@ -162,7 +152,6 @@ function commitWork(fiber) {
       while(parent.tag === tags.ClassComponent || parent.tag === tags.FunctionalComponent) {
         parent = parent.return
       }
-      console.log('delet', parent.stateNode, effect.stateNode);
       (effect.tag !== tags.ClassComponent && effect.tag !== tags.FunctionalComponent) && parent.stateNode.removeChild(effect.stateNode)
     }
 

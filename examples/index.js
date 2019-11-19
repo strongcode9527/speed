@@ -7,7 +7,7 @@ class App extends Component {
 
     this.state = {
       num: 0,
-      show: true
+      show: false
     }
 
   }
@@ -30,12 +30,13 @@ class App extends Component {
     const {num} = this.state
 
     return (
-      <div onClick={() => {console.log('in')}} style={{background: 'red'}} className="container">
+      <div style={{background: 'red'}} className="container">
         <span>{num}</span> 
         <span data-index={this.state.num}>strong2</span>
         {
           this.state.show && <div>show</div>
-        }  
+        }
+        <div dangersInnerHTML="strongInnerhtml"></div>
       </div>
     )
   }
