@@ -49,7 +49,7 @@ function workLoop(deadline) {
  */
 function createUnitOfWork(currentFiber) {
 
-
+  console.log(currentFiber);
   if(currentFiber.child) return currentFiber.child
   
   update(currentFiber)

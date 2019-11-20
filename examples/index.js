@@ -7,7 +7,8 @@ class App extends Component {
 
     this.state = {
       num: 0,
-      show: false
+      show: false,
+      list: [{title: 'strong'}]
     }
 
   }
@@ -27,16 +28,27 @@ class App extends Component {
   }
 
   render() {
-    const {num} = this.state
+    const {num, list} = this.state
 
     return (
       <div style={{background: 'red'}} className="container">
-        {
+        {/* {
           this.state.show && <div>show</div>
+        }
+        {
+          list.map(item => (
+            <div className="sssss">{item.title}</div>
+          ))
         }
         <span>{num}</span> 
         <span data-index={this.state.num}>strong2</span>
-        <div dangersInnerHTML="strongInnerhtml"></div>
+        <div dangersInnerHTML="strongInnerhtml"></div> */}
+        <div>storng</div>
+        {
+          list.map(item => (
+            <div className="sssss">{item.title}</div>
+          ))
+        }
       </div>
     )
   }

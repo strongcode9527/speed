@@ -4,7 +4,7 @@ import {createArrayChild} from '../utils'
 import EFFECTS from '../structure/effects'
 import tags from '../structure/componentTags'
 import {createFiber} from '../structure/fiber'
-
+import safeGetValue from '../utils/safeGetValue'
 
 // 更新和创建在一起。
 export default function update(fiber) {
@@ -62,7 +62,7 @@ function updateDomComponent(fiber) {
 
 function updateTextComponent(fiber) {
   if(!fiber.stateNode) {
-    fiber.stateNode = document.createTextNode(fiber.props.children[0])
+    fiber.stateNode = document.createTextNode(safeGetValue('', ['props', 'children', 0], fiber));
   }
   
   return handleChildrenVnode(fiber, createChilds(fiber))
@@ -74,10 +74,10 @@ function updateTextComponent(fiber) {
  * @param {Vnode} childs 
  */
 function handleChildrenVnode(currentFiber, childs) {
+  console.log(currentFiber, childs)
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
   let prevFiber = null
   let index = 0
-  console.log(currentFiber, childs)
   while(index < childs.length || oldChildFiber) {
     let child = childs[index]
     // child 是vnode，而不是fiber
