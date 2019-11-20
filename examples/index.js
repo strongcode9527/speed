@@ -31,11 +31,11 @@ class App extends Component {
 
     return (
       <div style={{background: 'red'}} className="container">
-        <span>{num}</span> 
-        <span data-index={this.state.num}>strong2</span>
         {
           this.state.show && <div>show</div>
         }
+        <span>{num}</span> 
+        <span data-index={this.state.num}>strong2</span>
         <div dangersInnerHTML="strongInnerhtml"></div>
       </div>
     )

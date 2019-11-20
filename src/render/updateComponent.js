@@ -77,6 +77,7 @@ function handleChildrenVnode(currentFiber, childs) {
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
   let prevFiber = null
   let index = 0
+  console.log(currentFiber, childs)
   while(index < childs.length || oldChildFiber) {
     let child = childs[index]
     // child 是vnode，而不是fiber
@@ -128,16 +129,11 @@ function handleChildrenVnode(currentFiber, childs) {
       currentFiber.effects.push(oldChildFiber)
     }
 
+    prevFiber && (prevFiber.sibling = newFiber);
 
-    
+    (index === 0 || !prevFiber) && (currentFiber.child = newFiber)
 
-
-    prevFiber && (prevFiber.sibling = newFiber)
-
-    prevFiber = newFiber
-
-    
-    index === 0 && (currentFiber.child = newFiber)
+    prevFiber = newFiber;
     
     oldChildFiber = path(['sibling'], oldChildFiber)
 

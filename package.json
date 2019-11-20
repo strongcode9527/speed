@@ -1,6 +1,6 @@
 {
   "name": "strong-speed",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "react-like framework",
   "main": "dist/bundle.js",
   "directories": {
