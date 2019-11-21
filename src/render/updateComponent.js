@@ -75,16 +75,20 @@ function updateTextComponent(fiber) {
  */
 function handleChildrenVnode(currentFiber, childs) {
   let prevFiber = null;
+  console.log(currentFiber, childs);
   (function loopChildren(currentFiber, childs) {
     let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null;
     let index = 0;
     while(index < childs.length || oldChildFiber) {
+      console.log('in handleChild while', index, currentFiber, childs.length)
       let child = childs[index]
       // child 是vnode，而不是fiber
       let newFiber = null
   
       if(Array.isArray(child)) {
         loopChildren(currentFiber, child)
+        index++;
+        continue;
       }
       if(typeof child === 'object') {
         newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
@@ -125,11 +129,11 @@ function handleChildrenVnode(currentFiber, childs) {
       // 删除
       else if(!isSame && oldChildFiber){
       
-        oldChildFiber.effectTag = EFFECTS.DELETION
+        oldChildFiber.effectTag = EFFECTS.DELETION;
   
-        !Array.isArray(currentFiber.effects) && (currentFiber.effects = [])
+        !Array.isArray(currentFiber.effects) && (currentFiber.effects = []);
   
-        currentFiber.effects.push(oldChildFiber)
+        currentFiber.effects.push(oldChildFiber);
       }
   
       prevFiber && (prevFiber.sibling = newFiber);
