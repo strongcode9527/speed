@@ -8,7 +8,7 @@ class App extends Component {
     this.state = {
       num: 0,
       show: false,
-      list: [{title: 'strong'}]
+      list: [{title: 'strong'}, {title: 'strong123'}]
     }
 
   }
@@ -43,7 +43,7 @@ class App extends Component {
         <span>{num}</span> 
         <span data-index={this.state.num}>strong2</span>
         <div dangersInnerHTML="strongInnerhtml"></div> */}
-        <div>storng</div>
+        {/* <div>storng</div> */}
         {
           list.map(item => (
             <div className="sssss">{item.title}</div>

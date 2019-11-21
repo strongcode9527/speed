@@ -48,8 +48,6 @@ function workLoop(deadline) {
  * @param {Object} currentFiber 此参数必须为已经instance后的fiber
  */
 function createUnitOfWork(currentFiber) {
-
-  console.log(currentFiber);
   if(currentFiber.child) return currentFiber.child
   
   update(currentFiber)

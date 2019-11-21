@@ -74,71 +74,76 @@ function updateTextComponent(fiber) {
  * @param {Vnode} childs 
  */
 function handleChildrenVnode(currentFiber, childs) {
-  console.log(currentFiber, childs)
-  let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null
-  let prevFiber = null
-  let index = 0
-  while(index < childs.length || oldChildFiber) {
-    let child = childs[index]
-    // child 是vnode，而不是fiber
-    let newFiber = null
-
-    if(typeof child === 'object') {
-      newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
-    }
-    // 这里是对于jsx合格值的筛查如果直接if(child)会有问题，那就是特殊值0，0属于false，但是他是jsx合理显示的内容。
-    else if([undefined, null, false].indexOf(child) === -1){
-      newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
-    } else {
-      index++;
-      continue;
-    }
-    
-    const isSame = oldChildFiber && newFiber && oldChildFiber.type === newFiber.type
-    // console.log(isSame,oldChildFiber, currentFiber, index)
-    
-    // 实例化节点,update处理多样化子节点。
-    // update(newFiber) 
+  let prevFiber = null;
+  (function loopChildren(currentFiber, childs) {
+    let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null;
+    let index = 0;
+    while(index < childs.length || oldChildFiber) {
+      let child = childs[index]
+      // child 是vnode，而不是fiber
+      let newFiber = null
   
-
-    // newFiber && (newFiber.alternate = oldChildFiber)
-
-    // 更新
-    if(isSame) {
-      Object.assign(newFiber, {
-        effectTag: EFFECTS.UPDATE,
-        alternate: oldChildFiber,
-        return: currentFiber,
-        stateNode: oldChildFiber.stateNode,
-      })
+      if(Array.isArray(child)) {
+        loopChildren(currentFiber, child)
+      }
+      if(typeof child === 'object') {
+        newFiber = createFiber(undefined, child.type, undefined, child.props, currentFiber)
+      }
+      // 这里是对于jsx合格值的筛查如果直接if(child)会有问题，那就是特殊值0，0属于false，但是他是jsx合理显示的内容。
+      else if([undefined, null, false].indexOf(child) === -1){
+        newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
+      } else {
+        index++;
+        continue;
+      }
+      
+      const isSame = oldChildFiber && newFiber && oldChildFiber.type === newFiber.type
+      // console.log(isSame,oldChildFiber, currentFiber, index)
+      
+      // 实例化节点,update处理多样化子节点。
+      // update(newFiber) 
     
+  
+      // newFiber && (newFiber.alternate = oldChildFiber)
+  
+      // 更新
+      if(isSame) {
+        Object.assign(newFiber, {
+          effectTag: EFFECTS.UPDATE,
+          alternate: oldChildFiber,
+          return: currentFiber,
+          stateNode: oldChildFiber.stateNode,
+        })
+      
+      }
+  
+      // 添加
+      else if(!isSame && newFiber) {
+        newFiber.effectTag = EFFECTS.PLACEMENT
+      }
+  
+      // 删除
+      else if(!isSame && oldChildFiber){
+      
+        oldChildFiber.effectTag = EFFECTS.DELETION
+  
+        !Array.isArray(currentFiber.effects) && (currentFiber.effects = [])
+  
+        currentFiber.effects.push(oldChildFiber)
+      }
+  
+      prevFiber && (prevFiber.sibling = newFiber);
+  
+      ((index === 0 && !prevFiber) || !prevFiber) && (currentFiber.child = newFiber)
+  
+      prevFiber = newFiber;
+      
+      oldChildFiber = path(['sibling'], oldChildFiber)
+  
+      index++ 
     }
-
-    // 添加
-    else if(!isSame && newFiber) {
-      newFiber.effectTag = EFFECTS.PLACEMENT
-    }
-
-    // 删除
-    else if(!isSame && oldChildFiber){
-    
-      oldChildFiber.effectTag = EFFECTS.DELETION
-
-      !Array.isArray(currentFiber.effects) && (currentFiber.effects = [])
-
-      currentFiber.effects.push(oldChildFiber)
-    }
-
-    prevFiber && (prevFiber.sibling = newFiber);
-
-    (index === 0 || !prevFiber) && (currentFiber.child = newFiber)
-
-    prevFiber = newFiber;
-    
-    oldChildFiber = path(['sibling'], oldChildFiber)
-
-    index++ 
-  }
+  })(currentFiber, childs);
+  
   
   return currentFiber
 }
