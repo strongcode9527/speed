@@ -24,14 +24,12 @@ function performWork(deadline) {
 }
 
 function workLoop(deadline) {
-   console.log('in workLoop')
   // 如果当前不存在要处理的节点，那么就在更新队列中取出要处理的节点。
   if(!renderFactory.nextUnitOfWork) {
     createUpdateFiberFromQueue()
   }
 
   while (deadline.timeRemaining() > 0 && renderFactory.nextUnitOfWork) {
-    console.log('in while');
     renderFactory.nextUnitOfWork = createUnitOfWork(renderFactory.nextUnitOfWork)
   }
 

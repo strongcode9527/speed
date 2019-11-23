@@ -18,6 +18,7 @@ class App extends Component {
     //   this.setState({num: this.state.num + 1, show: !this.state.show})
     // }, 1)
     setTimeout(() => {
+      console.log('----------afterChange');
       this.setState({
         list: []
       })
@@ -37,14 +38,10 @@ class App extends Component {
 
     return (
       <div style={{background: 'red'}} className="container">
-        <div>adfasfads</div>
         {
-          list.map(item => (
-            <div className="sssss">{item.title}</div>
+          list.map((item, index) => (
+            <div className={index}>{item.title}</div>
           ))
-        }
-        {
-          false && (<div>adfasfds</div>)
         }
       </div>
     )

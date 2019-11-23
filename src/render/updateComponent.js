@@ -75,18 +75,18 @@ function updateTextComponent(fiber) {
  */
 function handleChildrenVnode(currentFiber, childs) {
   let prevFiber = null;
-  console.log(currentFiber, childs);
   (function loopChildren(currentFiber, childs) {
     let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null;
     let index = 0;
+    console.log('inloop', currentFiber, childs)
     while(index < childs.length || oldChildFiber) {
-      console.log('in handleChild while', index, currentFiber, childs.length)
-      let child = childs[index]
+      let child = childs[index];
+      console.log('in white', oldChildFiber, child)
+      const childIsExit = index < childs.length;
       // child 是vnode，而不是fiber
-      let newFiber = null
-  
+      let newFiber = null;
       if(Array.isArray(child)) {
-        loopChildren(currentFiber, child)
+        loopChildren(currentFiber, child);
         index++;
         continue;
       }
@@ -96,7 +96,7 @@ function handleChildrenVnode(currentFiber, childs) {
       // 这里是对于jsx合格值的筛查如果直接if(child)会有问题，那就是特殊值0，0属于false，但是他是jsx合理显示的内容。
       else if([undefined, null, false].indexOf(child) === -1){
         newFiber = createFiber(tags.HostText, null, undefined, {children: [child]}, currentFiber)
-      } else {
+      } else if(childIsExit) {
         index++;
         continue;
       }
@@ -142,9 +142,9 @@ function handleChildrenVnode(currentFiber, childs) {
   
       prevFiber = newFiber;
       
-      oldChildFiber = path(['sibling'], oldChildFiber)
-  
-      index++ 
+      oldChildFiber = path(['sibling'], oldChildFiber);
+      console.log('after child sibling', oldChildFiber)
+      index++;
     }
   })(currentFiber, childs);
   
