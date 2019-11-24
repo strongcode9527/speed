@@ -14,15 +14,19 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // this.id = setInterval(() => {
-    //   this.setState({num: this.state.num + 1, show: !this.state.show})
-    // }, 1)
     setTimeout(() => {
       console.log('----------afterChange');
       this.setState({
         list: []
       })
-    }, 5000);
+    }, 2000);
+
+    setTimeout(() => {
+      console.log('in 222222222222change');
+      this.setState({
+        list: [{title: 'afterchange'}, {title: 'storng after change'}]
+      })
+    },4000)
   }
 
   componentDidUpdate() {
@@ -38,11 +42,13 @@ class App extends Component {
 
     return (
       <div style={{background: 'red'}} className="container">
+        <div>111</div>
         {
           list.map((item, index) => (
             <div className={index}>{item.title}</div>
           ))
         }
+        <div>222</div>
       </div>
     )
   }

@@ -51,10 +51,10 @@ function createUnitOfWork(currentFiber) {
   if(currentFiber.child) return currentFiber.child
   
   update(currentFiber)
-
   // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
-  if(!currentFiber.type || currentFiber.child === undefined) {
+  if(!currentFiber.type || [undefined, null, false].includes(currentFiber.child)) {
     while(currentFiber) {
+      console.log('effect while');
       // 在这里为组件实例更新fiber信息。
       collectEffects(currentFiber)
       
