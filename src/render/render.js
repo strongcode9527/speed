@@ -54,7 +54,6 @@ function createUnitOfWork(currentFiber) {
   // 意味着这个currentFiber已经是叶子节点了，只能返回上一层寻找兄弟节点。
   if(!currentFiber.type || [undefined, null, false].includes(currentFiber.child)) {
     while(currentFiber) {
-      console.log('effect while');
       // 在这里为组件实例更新fiber信息。
       collectEffects(currentFiber)
       
@@ -113,8 +112,6 @@ function collectEffects(fiber) {
 function commitWork(fiber) {
   const effects = fiber.effects
   effects.forEach(effect => {
-    
-    // 
     if(effect.effectTag === EFFECTS.PLACEMENT) {
       let parent = effect.return
     

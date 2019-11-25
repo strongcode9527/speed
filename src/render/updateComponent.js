@@ -75,21 +75,24 @@ function updateTextComponent(fiber) {
  */
 function handleChildrenVnode(currentFiber, childs) {
   let prevFiber = null;
-  
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null;
-
   (function loopChildren(currentFiber, childs) {
+    if(childs.length === 0) {
+      return;
+    } 
     let index = 0;
     while(index < childs.length || oldChildFiber) {
       let child = childs[index];
-      console.log('in white', index, child)
       const childIsExit = index < childs.length;
       // child 是vnode，而不是fiber
       let newFiber = null;
       if(Array.isArray(child)) {
+        if(child.length === 0) {
+          index++;
+          continue;
+        }
         loopChildren(currentFiber, child);
         index++;
-        console.log('in array, index', index)
         continue;
       }
       if(typeof child === 'object') {
@@ -125,29 +128,29 @@ function handleChildrenVnode(currentFiber, childs) {
   
       // 添加
       else if(!isSame && newFiber) {
-        newFiber.effectTag = EFFECTS.PLACEMENT
+        newFiber.effectTag = EFFECTS.PLACEMENT;
       }
   
       // 删除
       else if(!isSame && oldChildFiber){
-        console.log('in delete', oldChildFiber, currentFiber)
         oldChildFiber.effectTag = EFFECTS.DELETION;
   
         !Array.isArray(currentFiber.effects) && (currentFiber.effects = []);
   
         currentFiber.effects.push(oldChildFiber);
       }
-  
+      // 设置当前节点的子节点，首先当index为0时并且preFiver为空，或者之前的新节点并且当前节点的子节点未被设置。
+      if((index === 0 && !prevFiber) ||(!prevFiber && !currentFiber.child)) {
+        currentFiber.child = newFiber;
+      }
+
       prevFiber && (prevFiber.sibling = newFiber);
-  
-      ((index === 0 && !prevFiber) || !prevFiber) && (currentFiber.child = newFiber)
-  
+
       prevFiber = newFiber;
       
       oldChildFiber = path(['sibling'], oldChildFiber);
       index++;
     }
-    return index
   })(currentFiber, childs);
   
   

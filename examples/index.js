@@ -41,12 +41,18 @@ class App extends Component {
     const {num, list} = this.state
 
     return (
-      <div style={{background: 'red'}} className="container">
+      <div className="container">
+        {
+          false && <div>false</div>
+        }
         <div>111</div>
         {
           list.map((item, index) => (
             <div className={index}>{item.title}</div>
           ))
+        }
+        {
+          false && <div>false2</div>
         }
         <div>222</div>
       </div>
