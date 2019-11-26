@@ -31,10 +31,12 @@ function updateClassComponent(fiber) {
   // 创建fiber
   if(!fiber.stateNode) {
     const instantiation = new fiber.type(fiber.props)
-    fiber.tag = tags.ClassComponent
-    fiber.stateNode = instantiation
-    fiber.stateNode.__relative = fiber
+    fiber.tag = tags.ClassComponent;
+    fiber.stateNode = instantiation;
+    fiber.stateNode.props = fiber.props;
+    fiber.stateNode.__relative = fiber;
   }
+  fiber.stateNode.props = { ...fiber.stateNode.props, ...fiber.props };
 
   fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
 

@@ -8,7 +8,8 @@ class App extends Component {
     this.state = {
       num: 0,
       show: false,
-      list: [{title: 'strong'}, {title: 'strong123'}]
+      list: [{title: 'strong'}, {title: 'strong123'}],
+      name: 'strong',
     }
 
   }
@@ -17,14 +18,16 @@ class App extends Component {
     setTimeout(() => {
       console.log('----------afterChange');
       this.setState({
-        list: []
+        list: [],
+        name: 'strong1'
       })
     }, 2000);
 
     setTimeout(() => {
       console.log('in 222222222222change');
       this.setState({
-        list: [{title: 'afterchange'}, {title: 'storng after change'}]
+        list: [{title: 'afterchange'}, {title: 'storng after change'}],
+        name: 'strong2'
       })
     },4000)
   }
@@ -38,10 +41,11 @@ class App extends Component {
   }
 
   render() {
-    const {num, list} = this.state
-
+    const {num, list, name} = this.state
+    console.log('props', this.props);
     return (
       <div className="container">
+        <Temp name={name}/>
         {
           false && <div>false</div>
         }
@@ -60,7 +64,17 @@ class App extends Component {
   }
 }
 
-render(<App></App>, document.getElementById('root'))
+
+class Temp extends Component {
+  render() {
+    console.log(this.props);
+    return (
+      <div>temp</div>
+    )
+  }
+}
+
+render(<App id={'aaa'}></App>, document.getElementById('root'))
 
 
 
