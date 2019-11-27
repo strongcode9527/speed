@@ -1,5 +1,5 @@
 import { scheduleWork } from '../render/render';
-
+ 
 export class Component {
   public setState(newState: any): void {
     scheduleWork(this, newState);
