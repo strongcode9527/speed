@@ -1,23 +1,73 @@
-import {path, pathOr} from 'ramda';
+import {path, pathOr} from 'ramda'
 
-import {createArrayChild} from '../utils';
-import EFFECTS from '../structure/effects';
-import tags from '../structure/componentTags';
-import {createFiber} from '../structure/fiber';
-import { FiberInterface } from './../structure/fiber';
-import { VirtualNodeInterface } from '../structure/Vnode';
+import {createArrayChild} from '../utils'
+import EFFECTS from '../structure/effects'
+import tags from '../structure/componentTags'
+import {createFiber} from '../structure/fiber'
+import safeGetValue from '../utils/safeGetValue'
 
-function createChilds(currentFiber): VirtualNodeInterface [] {
-  let childs = [];
-  if(path(['type', 'prototype', 'isClassComponent'], currentFiber) || path(['stateNode', 'constructor', 'prototype', 'isClassComponent'], currentFiber)) {
-    childs = createArrayChild(currentFiber.stateNode.render());
+// 更新和创建在一起。
+export default function update(fiber) {
+
+  if(path(['type', 'prototype', 'isClassComponent'], fiber)) {
+    return updateClassComponent(fiber)
   }
-  else if(typeof path(['type'], currentFiber) === 'function') {
-    childs = createArrayChild(currentFiber.stateNode(currentFiber.props));
-  }else {
-    childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber));
+
+  else if(typeof fiber.type === 'function') {
+    return updateFunctionComponent(fiber)
   }
-  return childs;
+
+  else if(typeof fiber.type === 'string'){
+    return updateDomComponent(fiber)
+  }
+  
+  else {
+    return updateTextComponent(fiber)
+  }
+}
+
+
+function updateClassComponent(fiber) {
+  // 创建fiber
+  if(!fiber.stateNode) {
+    const instantiation = new fiber.type(fiber.props)
+    fiber.tag = tags.ClassComponent;
+    fiber.stateNode = instantiation;
+    fiber.stateNode.props = fiber.props;
+    fiber.stateNode.__relative = fiber;
+  }
+  fiber.stateNode.props = { ...fiber.stateNode.props, ...fiber.props };
+
+  fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState}
+
+  fiber.partialState = null
+  
+ 
+  return handleChildrenVnode(fiber, createChilds(fiber))
+}
+
+function updateFunctionComponent(fiber) {
+  const children = fiber.type(fiber.props)
+  fiber.tag = tags.FunctionalComponent
+  fiber.stateNode = children
+}
+
+function updateDomComponent(fiber) {
+  if(!fiber.stateNode) {
+    const dom = document.createElement(fiber.type)
+    fiber.tag = fiber.tag || tags.HostComponent
+    fiber.stateNode = dom
+  }
+
+  return handleChildrenVnode(fiber, createChilds(fiber))
+}
+
+function updateTextComponent(fiber) {
+  if(!fiber.stateNode) {
+    fiber.stateNode = document.createTextNode(safeGetValue('', ['props', 'children', 0], fiber));
+  }
+  
+  return handleChildrenVnode(fiber, createChilds(fiber))
 }
 
 /**
@@ -25,7 +75,7 @@ function createChilds(currentFiber): VirtualNodeInterface [] {
  * @param {Fiber} currentFiber 
  * @param {Vnode} childs 
  */
-function handleChildrenVnode(currentFiber: FiberInterface, childs): FiberInterface {
+function handleChildrenVnode(currentFiber, childs) {
   let prevFiber = null;
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null;
   (function loopChildren(currentFiber, childs) {
@@ -109,73 +159,21 @@ function handleChildrenVnode(currentFiber: FiberInterface, childs): FiberInterfa
   return currentFiber;
 }
 
-function updateClassComponent(fiber): FiberInterface {
-  // 创建fiber
-  if(!fiber.stateNode) {
-    const instantiation = new fiber.type(fiber.props);
-    fiber.tag = tags.ClassComponent;
-    fiber.stateNode = instantiation;
-    fiber.stateNode.props = fiber.props;
-    fiber.stateNode.__relative = fiber;
+
+
+function createChilds(currentFiber) {
+  let childs = []
+  if(path(['type', 'prototype', 'isClassComponent'], currentFiber) || path(['stateNode', 'constructor', 'prototype', 'isClassComponent'], currentFiber)) {
+    childs = createArrayChild(currentFiber.stateNode.render())
   }
-  fiber.stateNode.props = { ...fiber.stateNode.props, ...fiber.props };
-
-  fiber.stateNode.state = {...fiber.stateNode.state, ...fiber.partialState};
-
-  fiber.partialState = null;
-  
- 
-  return handleChildrenVnode(fiber, createChilds(fiber));
-}
-
-function updateFunctionComponent(fiber): void {
-  const children = fiber.type(fiber.props);
-  fiber.tag = tags.FunctionalComponent;
-  fiber.stateNode = children;
-}
-
-function updateDomComponent(fiber: FiberInterface): FiberInterface {
-  if(!fiber.stateNode) {
-    const dom = document.createElement(fiber.type);
-    fiber.tag = fiber.tag || tags.HostComponent;
-    fiber.stateNode = dom;
+  else if(typeof path(['type'], currentFiber) === 'function') {
+    childs = createArrayChild(currentFiber.stateNode(currentFiber.props))
+  }else {
+    childs = createArrayChild(pathOr([], ['props', 'children'], currentFiber))
   }
-
-  return handleChildrenVnode(fiber, createChilds(fiber));
-}
-
-function updateTextComponent(fiber): FiberInterface {
-  if(!fiber.stateNode) {
-    fiber.stateNode = document.createTextNode(fiber.props.children[0]);
-  }
-  
-  return handleChildrenVnode(fiber, createChilds(fiber));
+  return childs
 }
 
 
 
 
-
-
-
-
-
-// 更新和创建在一起。
-export default function update(fiber): FiberInterface | void {
-
-  if (path(['type', 'prototype', 'isClassComponent'], fiber)) {
-    return updateClassComponent(fiber);
-  }
-
-  else if(typeof fiber.type === 'function') {
-    return updateFunctionComponent(fiber);
-  }
-
-  else if(typeof fiber.type === 'string'){
-    return updateDomComponent(fiber);
-  }
-  
-  else {
-    return updateTextComponent(fiber);
-  }
-}

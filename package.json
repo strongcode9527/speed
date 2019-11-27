@@ -1,8 +1,8 @@
 {
-  "name": "speed",
-  "version": "1.0.0",
+  "name": "strong-speed",
+  "version": "1.0.8",
   "description": "react-like framework",
-  "main": "index.js",
+  "main": "dist/bundle.js",
   "directories": {
     "example": "examples"
   },
@@ -40,7 +40,9 @@
   },
   "scripts": {
     "start": "node ./scripts/dev.js --trace-depracation",
-    "lint": "eslint ./src --ext .ts,.tsx"
+    "lint": "eslint ./src --ext .ts,.tsx",
+    "build": "rollup --config",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
