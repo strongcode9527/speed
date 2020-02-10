@@ -7,37 +7,74 @@ class App extends Component {
 
     this.state = {
       num: 0,
-      show: true
+      show: false,
+      list: [{title: 'strong'}, {title: 'strong123'}],
+      name: 'strong',
     }
 
   }
 
   componentDidMount() {
-    // this.id = setInterval(() => {
-    //   this.setState({num: this.state.num + 1, show: !this.state.show})
-    // }, 1)
+    setTimeout(() => {
+      console.log('----------afterChange');
+      this.setState({
+        list: [],
+        name: 'strong1'
+      })
+    }, 2000);
+
+    setTimeout(() => {
+      console.log('in 222222222222change');
+      this.setState({
+        list: [{title: 'afterchange'}, {title: 'storng after change'}],
+        name: 'strong2'
+      })
+    },4000)
   }
 
   componentDidUpdate() {
     console.log('in update')
   }
 
-  render() {
-    const {num} = this.state
+  handleClick = () => {
+    console.log('insssss');
+  }
 
+  render() {
+    const {num, list, name} = this.state
+    console.log('props', this.props);
     return (
-      <div onClick={() => {console.log('in')}} style={{background: 'red'}} className="container">
-        <span>{num}</span> 
-        <span data-index={this.state.num}>strong2</span>
+      <div className="container">
+        <Temp name={name}/>
         {
-          this.state.show && <div onClick={(e) => {console.log('in child'); e.stopPropagation();}}>show</div>
-        }  
+          false && <div>false</div>
+        }
+        <div>111</div>
+        {
+          list.map((item, index) => (
+            <div className={index}>{item.title}</div>
+          ))
+        }
+        {
+          false && <div>false2</div>
+        }
+        <div>222</div>
       </div>
     )
   }
 }
 
-render(<App></App>, document.getElementById('root'))
+
+class Temp extends Component {
+  render() {
+    console.log(this.props);
+    return (
+      <div>temp</div>
+    )
+  }
+}
+
+render(<App id={'aaa'}></App>, document.getElementById('root'))
 
 
 

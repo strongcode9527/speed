@@ -1,7 +1,7 @@
-const merge = require('webpack-merge'),
-      common = require('./webpack.common'),
-      webpack = require('webpack'),
-      HtmlWebpackPlugin  = require('html-webpack-plugin')
+const merge = require('webpack-merge');
+const common = require('./webpack.common');
+const webpack = require('webpack');
+const HtmlWebpackPlugin  = require('html-webpack-plugin');
       
 
 
