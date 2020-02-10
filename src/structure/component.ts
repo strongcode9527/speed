@@ -1,6 +1,9 @@
 import { scheduleWork } from '../render/render';
  
+
+
 export class Component {
+  isClassComponent: boolean;
   public setState(newState: any): void {
     scheduleWork(this, newState);
   }
