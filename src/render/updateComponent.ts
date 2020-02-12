@@ -28,7 +28,7 @@ function createChilds(currentFiber): VirtualNodeInterface [] {
 function handleChildrenVnode(currentFiber: FiberInterface, childs): FiberInterface {
   let prevFiber = null;
   let oldChildFiber = currentFiber.alternate ? currentFiber.alternate.child : null;
-  (function loopChildren(currentFiber, childs) {
+  (function loopChildren(currentFiber, childs): void {
     if(childs.length === 0) {
       return;
     } 
@@ -74,8 +74,7 @@ function handleChildrenVnode(currentFiber: FiberInterface, childs): FiberInterfa
           alternate: oldChildFiber,
           return: currentFiber,
           stateNode: oldChildFiber.stateNode,
-        })
-      
+        });
       }
   
       // 添加
